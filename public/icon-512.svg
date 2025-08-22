@@ -1,0 +1,12 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo circular -->
+  <circle cx="256" cy="256" r="256" fill="#3b82f6"/>
+
+  <!-- Procesos representados como rectángulos -->
+  <rect x="128" y="160" width="64" height="96" rx="8" fill="white" opacity="0.9"/>
+  <rect x="224" y="128" width="64" height="128" rx="8" fill="white" opacity="0.7"/>
+  <rect x="320" y="192" width="64" height="64" rx="8" fill="white" opacity="0.8"/>
+
+  <!-- Indicador de CPU/Procesamiento -->
+  <circle cx="256" cy="352" r="24" fill="white" opacity="0.6"/>
+</svg>
