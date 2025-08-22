@@ -41,6 +41,12 @@ export class FCFSScheduler implements IProcessScheduler {
       this.runningProcess = this.readyQueue.shift()!;
       this.runningProcess.start(this.currentTime);
     }
+
+    this.readyQueue.forEach((process) => {
+      if (process.isWaiting()) {
+        process.setReady();
+      }
+    });
   }
 
   getCurrentState(): {

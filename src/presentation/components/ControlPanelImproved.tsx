@@ -98,7 +98,12 @@ export const ControlPanelImproved: React.FC = () => {
               <input
                 type='number'
                 value={config.processGenerationInterval}
-                onChange={(e) => handleConfigChange('processGenerationInterval', e.target.value)}
+                onChange={(e) =>
+                  handleConfigChange(
+                    'processGenerationInterval',
+                    e.target.value,
+                  )
+                }
                 min={1}
                 max={10}
                 className='w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500'
@@ -113,12 +118,16 @@ export const ControlPanelImproved: React.FC = () => {
               <input
                 type='number'
                 value={config.minBurstTime}
-                onChange={(e) => handleConfigChange('minBurstTime', e.target.value)}
+                onChange={(e) =>
+                  handleConfigChange('minBurstTime', e.target.value)
+                }
                 min={1}
                 max={20}
                 className='w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500'
               />
-              <p className='text-xs text-gray-500'>Duración mínima (segundos)</p>
+              <p className='text-xs text-gray-500'>
+                Duración mínima (segundos)
+              </p>
             </div>
 
             <div className='space-y-2'>
@@ -128,12 +137,16 @@ export const ControlPanelImproved: React.FC = () => {
               <input
                 type='number'
                 value={config.maxBurstTime}
-                onChange={(e) => handleConfigChange('maxBurstTime', e.target.value)}
+                onChange={(e) =>
+                  handleConfigChange('maxBurstTime', e.target.value)
+                }
                 min={1}
                 max={50}
                 className='w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500'
               />
-              <p className='text-xs text-gray-500'>Duración máxima (segundos)</p>
+              <p className='text-xs text-gray-500'>
+                Duración máxima (segundos)
+              </p>
             </div>
 
             <div className='space-y-2'>
@@ -143,12 +156,16 @@ export const ControlPanelImproved: React.FC = () => {
               <input
                 type='number'
                 value={config.maxProcesses}
-                onChange={(e) => handleConfigChange('maxProcesses', e.target.value)}
+                onChange={(e) =>
+                  handleConfigChange('maxProcesses', e.target.value)
+                }
                 min={5}
                 max={50}
                 className='w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500'
               />
-              <p className='text-xs text-gray-500'>Total de procesos a generar</p>
+              <p className='text-xs text-gray-500'>
+                Total de procesos a generar
+              </p>
             </div>
           </div>
         </div>

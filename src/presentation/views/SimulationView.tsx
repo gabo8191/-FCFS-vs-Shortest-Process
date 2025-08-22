@@ -88,9 +88,9 @@ export const SimulationView: React.FC = () => {
                           <div className='flex items-center gap-3'>
                             <div
                               className={`w-3 h-3 rounded-full ${
-                                process.status === 'RUNNING'
+                                process.status === 'running'
                                   ? 'bg-green-500 animate-pulse'
-                                  : process.status === 'COMPLETED'
+                                  : process.status === 'completed'
                                   ? 'bg-blue-500'
                                   : 'bg-orange-400'
                               }`}
@@ -98,12 +98,6 @@ export const SimulationView: React.FC = () => {
                             <div className='flex items-center gap-2'>
                               <span className='font-medium text-sm'>
                                 {process.name}
-                              </span>
-                              <span className='text-xs bg-blue-100 px-1 rounded text-blue-700'>
-                                {process.burstTime}ms
-                              </span>
-                              <span className='text-xs bg-orange-100 px-1 rounded text-orange-700'>
-                                Llegada: {process.arrivalTime}ms
                               </span>
                               {process.startTime !== undefined && (
                                 <span className='text-xs bg-gray-200 px-1 rounded text-gray-600'>
@@ -184,9 +178,9 @@ export const SimulationView: React.FC = () => {
                           <div className='flex items-center gap-3'>
                             <div
                               className={`w-3 h-3 rounded-full ${
-                                process.status === 'RUNNING'
+                                process.status === 'running'
                                   ? 'bg-green-500 animate-pulse'
-                                  : process.status === 'COMPLETED'
+                                  : process.status === 'completed'
                                   ? 'bg-blue-500'
                                   : 'bg-orange-400'
                               }`}
@@ -194,12 +188,6 @@ export const SimulationView: React.FC = () => {
                             <div className='flex items-center gap-2'>
                               <span className='font-medium text-sm'>
                                 {process.name}
-                              </span>
-                              <span className='text-xs bg-purple-100 px-1 rounded text-purple-700 font-semibold'>
-                                ⚡ {process.remainingTime}ms
-                              </span>
-                              <span className='text-xs bg-blue-100 px-1 rounded text-blue-700'>
-                                Original: {process.burstTime}ms
                               </span>
                               {process.startTime !== undefined && (
                                 <span className='text-xs bg-gray-200 px-1 rounded text-gray-600'>
@@ -327,66 +315,36 @@ export const SimulationView: React.FC = () => {
           <div className='bg-white rounded-2xl shadow-sm border border-gray-100 p-6'>
             <h2 className='text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2'>
               <span>📖</span>
-              Leyenda Visual
+              Cómo Comparar los Algoritmos
             </h2>
 
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
               {/* FCFS Legend */}
               <div>
                 <h3 className='text-sm font-semibold text-blue-600 mb-3'>
-                  🚂 FCFS - Criterio de Ordenamiento
+                  🚂 FCFS - First Come, First Serve
                 </h3>
-                <div className='space-y-2 text-xs'>
-                  <div className='flex items-center gap-2'>
-                    <span className='bg-orange-100 px-1 rounded text-orange-700'>
-                      Llegada: Xms
-                    </span>
-                    <span className='text-gray-600'>
-                      ← Tiempo de llegada del proceso
-                    </span>
-                  </div>
-                  <div className='flex items-center gap-2'>
-                    <span className='bg-blue-100 px-1 rounded text-blue-700'>
-                      Xms
-                    </span>
-                    <span className='text-gray-600'>
-                      ← Tiempo total de ejecución
-                    </span>
-                  </div>
-                  <p className='text-gray-500 italic'>
-                    Los procesos se ejecutan en orden de llegada, sin importar
-                    su duración.
-                  </p>
-                </div>
+                <p className='text-sm text-gray-600 mb-2'>
+                  Los procesos se ejecutan en orden de llegada, sin importar su
+                  duración.
+                </p>
+                <p className='text-xs text-gray-500 italic'>
+                  "El primero que llega, es el primero que se atiende"
+                </p>
               </div>
 
               {/* SP Legend */}
               <div>
                 <h3 className='text-sm font-semibold text-purple-600 mb-3'>
-                  ⚡ SP - Criterio de Ordenamiento
+                  ⚡ SP - Shortest Process
                 </h3>
-                <div className='space-y-2 text-xs'>
-                  <div className='flex items-center gap-2'>
-                    <span className='bg-purple-100 px-1 rounded text-purple-700 font-semibold'>
-                      ⚡ Xms
-                    </span>
-                    <span className='text-gray-600'>
-                      ← Tiempo restante (criterio principal)
-                    </span>
-                  </div>
-                  <div className='flex items-center gap-2'>
-                    <span className='bg-blue-100 px-1 rounded text-blue-700'>
-                      Original: Xms
-                    </span>
-                    <span className='text-gray-600'>
-                      ← Tiempo original del proceso
-                    </span>
-                  </div>
-                  <p className='text-gray-500 italic'>
-                    Siempre ejecuta el proceso con menor tiempo restante. Puede
-                    interrumpir procesos.
-                  </p>
-                </div>
+                <p className='text-sm text-gray-600 mb-2'>
+                  Siempre ejecuta el proceso con menor tiempo restante. Puede
+                  interrumpir procesos.
+                </p>
+                <p className='text-xs text-gray-500 italic'>
+                  "El más corto primero, optimizando el tiempo de espera"
+                </p>
               </div>
             </div>
 
