@@ -8,30 +8,88 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icon-192.svg', 'icon-512.svg'],
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,jpg,jpeg}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365, // <== 365 days
+              },
+            },
+          },
+        ],
+      },
+      includeAssets: ['favicon.svg', 'icon-*.svg', 'icon-*.png'],
       manifest: {
-        name: 'Process Scheduler',
+        name: 'Simulador de Planificación de Procesos',
         short_name: 'Process Scheduler',
-        description: 'Simulador de algoritmos de planificación de procesos',
+        description:
+          'Simulador interactivo de algoritmos de planificación de procesos FCFS vs Shortest Process',
         theme_color: '#3b82f6',
         background_color: '#ffffff',
         display: 'standalone',
-        start_url: './',
-        scope: './',
+        orientation: 'portrait',
+        start_url: '/',
+        scope: '/',
+        lang: 'es',
+        categories: ['education', 'productivity'],
         icons: [
           {
-            src: 'icon-192.svg',
-            sizes: '192x192',
+            src: '/icon-72.svg',
+            sizes: '72x72',
             type: 'image/svg+xml',
             purpose: 'any',
           },
           {
-            src: 'icon-512.svg',
-            sizes: '512x512',
+            src: '/icon-96.svg',
+            sizes: '96x96',
             type: 'image/svg+xml',
             purpose: 'any',
           },
+          {
+            src: '/icon-144.svg',
+            sizes: '144x144',
+            type: 'image/svg+xml',
+            purpose: 'any',
+          },
+          {
+            src: '/icon-192.svg',
+            sizes: '192x192',
+            type: 'image/svg+xml',
+            purpose: 'any maskable',
+          },
+          {
+            src: '/icon-512.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml',
+            purpose: 'any maskable',
+          },
         ],
+        shortcuts: [
+          {
+            name: 'Nueva Simulación FCFS',
+            short_name: 'FCFS',
+            description: 'Iniciar simulación con algoritmo FCFS',
+            url: '/?algorithm=fcfs',
+            icons: [{ src: '/icon-192.svg', sizes: '192x192' }],
+          },
+          {
+            name: 'Nueva Simulación SJF',
+            short_name: 'SJF',
+            description: 'Iniciar simulación con algoritmo Shortest Job First',
+            url: '/?algorithm=sjf',
+            icons: [{ src: '/icon-192.svg', sizes: '192x192' }],
+          },
+        ],
+      },
+      devOptions: {
+        enabled: true,
+        type: 'module',
       },
     }),
   ],

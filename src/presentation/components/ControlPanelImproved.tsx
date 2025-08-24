@@ -9,6 +9,7 @@ import {
 import React, { useState } from 'react';
 import { SimulationConfig } from '../../domain/value-objects/SimulationConfig';
 import { useSimulationStore } from '../stores/simulationStore';
+import { EquityAnalysis } from './EquityAnalysis';
 
 export const ControlPanelImproved: React.FC = () => {
   const {
@@ -90,6 +91,70 @@ export const ControlPanelImproved: React.FC = () => {
 
       {isConfigExpanded && (
         <div className='border-t border-gray-200 pt-6'>
+          {/* Selector de configuraciones preestablecidas */}
+          <div className='mb-6 p-4 bg-blue-50 rounded-xl border border-blue-200'>
+            <h3 className='text-sm font-semibold text-blue-900 mb-3'>
+              ⚖️ Configuraciones de Equidad
+            </h3>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3'>
+              <button
+                onClick={() => updateConfig(SimulationConfig.createBalanced())}
+                className='p-3 text-left bg-white rounded-lg border border-blue-200 hover:border-blue-400 transition-colors'
+              >
+                <div className='font-medium text-sm text-blue-900'>
+                  🎯 Balanceada
+                </div>
+                <div className='text-xs text-blue-700'>Más equitativa</div>
+                <div className='text-xs text-gray-600 mt-1'>Ratio 2.3:1</div>
+              </button>
+
+              <button
+                onClick={() =>
+                  updateConfig(SimulationConfig.createFCFSFriendly())
+                }
+                className='p-3 text-left bg-white rounded-lg border border-green-200 hover:border-green-400 transition-colors'
+              >
+                <div className='font-medium text-sm text-green-900'>
+                  📋 Pro-FCFS
+                </div>
+                <div className='text-xs text-green-700'>Procesos similares</div>
+                <div className='text-xs text-gray-600 mt-1'>Ratio 1.5:1</div>
+              </button>
+
+              <button
+                onClick={() =>
+                  updateConfig(SimulationConfig.createSJFFriendly())
+                }
+                className='p-3 text-left bg-white rounded-lg border border-purple-200 hover:border-purple-400 transition-colors'
+              >
+                <div className='font-medium text-sm text-purple-900'>
+                  ⚡ Pro-SJF
+                </div>
+                <div className='text-xs text-purple-700'>Alta variabilidad</div>
+                <div className='text-xs text-gray-600 mt-1'>Ratio 12:1</div>
+              </button>
+
+              <button
+                onClick={() => updateConfig(SimulationConfig.createDefault())}
+                className='p-3 text-left bg-white rounded-lg border border-gray-200 hover:border-gray-400 transition-colors'
+              >
+                <div className='font-medium text-sm text-gray-900'>
+                  🔧 Por Defecto
+                </div>
+                <div className='text-xs text-gray-700'>
+                  Configuración mejorada
+                </div>
+                <div className='text-xs text-gray-600 mt-1'>Ratio 2.67:1</div>
+              </button>
+            </div>
+
+            <div className='mt-3 text-xs text-blue-800 bg-blue-100 p-3 rounded-lg'>
+              <strong>💡 Tip:</strong> La configuración "Balanceada" ofrece la
+              comparación más justa entre algoritmos. El ratio indica la
+              diferencia máxima/mínima entre duraciones de procesos.
+            </div>
+          </div>
+
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
             <div className='space-y-2'>
               <label className='text-sm font-medium text-gray-700'>
@@ -167,6 +232,11 @@ export const ControlPanelImproved: React.FC = () => {
                 Total de procesos a generar
               </p>
             </div>
+          </div>
+
+          {/* Análisis de Equidad */}
+          <div className='mt-6'>
+            <EquityAnalysis config={config} />
           </div>
         </div>
       )}
