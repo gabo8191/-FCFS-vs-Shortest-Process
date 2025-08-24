@@ -36,8 +36,8 @@ export class SimulationConfig {
     if (data.minProcessSize >= data.maxProcessSize) {
       throw new Error('Min process size must be less than max process size');
     }
-    if (data.maxProcesses <= 0 || data.maxProcesses > 50) {
-      throw new Error('Max processes must be between 1 and 50');
+    if (data.maxProcesses <= 0) {
+      throw new Error('Max processes must be greater than 0');
     }
   }
 
@@ -73,12 +73,12 @@ export class SimulationConfig {
   // Factory method for default configuration
   static createDefault(): SimulationConfig {
     return new SimulationConfig({
-      processGenerationInterval: 4, // Más tiempo para evitar acumulación
-      minBurstTime: 3, // Rango más estrecho y equilibrado
-      maxBurstTime: 8, // Ratio 2.67:1 más justo
+      processGenerationInterval: 0.5, // Generate processes every 0.5 seconds
+      minBurstTime: 1000,
+      maxBurstTime: 5000,
       minProcessSize: 10,
       maxProcessSize: 100,
-      maxProcesses: 25, // Más procesos para mejor estadística
+      maxProcesses: 20,
     });
   }
 

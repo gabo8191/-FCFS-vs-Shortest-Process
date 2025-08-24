@@ -1,14 +1,14 @@
 import { Process, ProcessStatus } from '../../domain/entities/Process';
 import { FCFSScheduler } from './FCFSScheduler';
-import { ShortestProcessScheduler } from './ShortestProcessScheduler';
+import { SRTFScheduler } from './SRTFScheduler';
 
 export class AlgorithmValidator {
   private fcfsScheduler: FCFSScheduler;
-  private spScheduler: ShortestProcessScheduler;
+  private srtfScheduler: SRTFScheduler;
 
   constructor() {
     this.fcfsScheduler = new FCFSScheduler();
-    this.spScheduler = new ShortestProcessScheduler();
+    this.srtfScheduler = new SRTFScheduler();
   }
 
   /**
@@ -37,27 +37,27 @@ export class AlgorithmValidator {
   }
 
   /**
-   * Valida el algoritmo Shortest Process
+   * Valida el algoritmo SRTF (Shortest Remaining Time First)
    */
-  validateShortestProcess(): void {
-    console.log('🔍 Validando algoritmo Shortest Process...\n');
+  validateSRTF(): void {
+    console.log('🔍 Validando algoritmo SRTF...\n');
 
     try {
       // Test 1: Proceso más corto primero
       console.log('Test 1: Verificar que el proceso más corto va primero');
-      this.testSPShortestFirst();
+      this.testSRTFShortestFirst();
 
       // Test 2: Expropiación
       console.log('\nTest 2: Verificar expropiación');
-      this.testSPPreemption();
+      this.testSRTFPreemption();
 
       // Test 3: Orden de completación
       console.log('\nTest 3: Verificar orden de completación');
-      this.testSPCompletionOrder();
+      this.testSRTFCompletionOrder();
 
-      console.log('\n✅ Validación Shortest Process completada\n');
+      console.log('\n✅ Validación SRTF completada\n');
     } catch (error) {
-      console.error('❌ Error en validación Shortest Process:', error);
+      console.error('❌ Error en validación SRTF:', error);
     }
   }
 
@@ -203,8 +203,8 @@ export class AlgorithmValidator {
     );
   }
 
-  private testSPShortestFirst(): void {
-    this.spScheduler.reset();
+  private testSRTFShortestFirst(): void {
+    this.srtfScheduler.reset();
 
     const process1 = new Process({
       id: 1,
@@ -237,11 +237,11 @@ export class AlgorithmValidator {
     });
 
     // Agregar en orden diferente
-    this.spScheduler.addProcess(process1); // 5 unidades
-    this.spScheduler.addProcess(process2); // 2 unidades (más corto)
-    this.spScheduler.addProcess(process3); // 3 unidades
+    this.srtfScheduler.addProcess(process1); // 5 unidades
+    this.srtfScheduler.addProcess(process2); // 2 unidades (más corto)
+    this.srtfScheduler.addProcess(process3); // 3 unidades
 
-    const state = this.spScheduler.getCurrentState();
+    const state = this.srtfScheduler.getCurrentState();
     const queue = state.readyQueue;
 
     console.log(
@@ -257,8 +257,8 @@ export class AlgorithmValidator {
     );
   }
 
-  private testSPPreemption(): void {
-    this.spScheduler.reset();
+  private testSRTFPreemption(): void {
+    this.srtfScheduler.reset();
 
     const process1 = new Process({
       id: 1,
@@ -280,18 +280,18 @@ export class AlgorithmValidator {
       remainingTime: 2,
     });
 
-    this.spScheduler.addProcess(process1);
+    this.srtfScheduler.addProcess(process1);
 
     // Ejecutar P1 por 2 unidades
-    this.spScheduler.execute(2000); // t=2, P1 remaining=3
+    this.srtfScheduler.execute(2000); // t=2, P1 remaining=3
 
     // Agregar P2 (más corto) durante la ejecución
-    this.spScheduler.addProcess(process2);
+    this.srtfScheduler.addProcess(process2);
 
     // Ejecutar un paso más - P2 debe expropiar
-    this.spScheduler.execute(1000); // t=3
+    this.srtfScheduler.execute(1000); // t=3
 
-    const state = this.spScheduler.getCurrentState();
+    const state = this.srtfScheduler.getCurrentState();
 
     console.log(
       `  Proceso ejecutándose: ${state.runningProcess?.name || 'Ninguno'}`,
@@ -309,8 +309,8 @@ export class AlgorithmValidator {
     );
   }
 
-  private testSPCompletionOrder(): void {
-    this.spScheduler.reset();
+  private testSRTFCompletionOrder(): void {
+    this.srtfScheduler.reset();
 
     const process1 = new Process({
       id: 1,
@@ -332,13 +332,13 @@ export class AlgorithmValidator {
       remainingTime: 1,
     });
 
-    this.spScheduler.addProcess(process1);
-    this.spScheduler.addProcess(process2);
+    this.srtfScheduler.addProcess(process1);
+    this.srtfScheduler.addProcess(process2);
 
     // P2 debe completarse primero (más corto)
-    this.spScheduler.execute(1000); // t=1, P2 completado
+    this.srtfScheduler.execute(1000); // t=1, P2 completado
 
-    let state = this.spScheduler.getCurrentState();
+    let state = this.srtfScheduler.getCurrentState();
     console.log(
       `  Después de 1 paso: ${state.completedProcesses
         .map((p) => p.name)
@@ -346,11 +346,11 @@ export class AlgorithmValidator {
     );
 
     // P1 debe completarse después
-    this.spScheduler.execute(1000); // t=2, P1 remaining=2
-    this.spScheduler.execute(1000); // t=3, P1 remaining=1
-    this.spScheduler.execute(1000); // t=4, P1 completado
+    this.srtfScheduler.execute(1000); // t=2, P1 remaining=2
+    this.srtfScheduler.execute(1000); // t=3, P1 remaining=1
+    this.srtfScheduler.execute(1000); // t=4, P1 completado
 
-    state = this.spScheduler.getCurrentState();
+    state = this.srtfScheduler.getCurrentState();
     console.log(
       `  Después de 4 pasos: ${state.completedProcesses
         .map((p) => p.name)
@@ -372,7 +372,7 @@ export class AlgorithmValidator {
     console.log('🚀 Iniciando validación de algoritmos de planificación...\n');
 
     this.validateFCFS();
-    this.validateShortestProcess();
+    this.validateSRTF();
 
     console.log('🎉 Validación completa finalizada');
   }

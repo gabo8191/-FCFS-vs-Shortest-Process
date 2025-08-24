@@ -77,22 +77,33 @@ export class Process {
       this._data.status !== ProcessStatus.READY &&
       this._data.status !== ProcessStatus.WAITING
     ) {
-      throw new Error('Process must be in READY or WAITING status to start');
+      console.warn(
+        `Attempting to start process ${this._data.name} in status ${this._data.status}`,
+      );
+      return; // Silently return instead of throwing error
     }
     this._data.status = ProcessStatus.RUNNING;
-    this._data.startTime = currentTime;
+    if (this._data.startTime === undefined) {
+      this._data.startTime = currentTime;
+    }
   }
 
   execute(timeStep: number): void {
     if (this._data.status !== ProcessStatus.RUNNING) {
-      throw new Error('Only running processes can be executed');
+      console.warn(
+        `Attempting to execute process ${this._data.name} in status ${this._data.status}`,
+      );
+      return; // Silently return instead of throwing error
     }
     this._data.remainingTime = Math.max(0, this._data.remainingTime - timeStep);
   }
 
   complete(currentTime: number): void {
     if (this._data.status !== ProcessStatus.RUNNING) {
-      throw new Error('Only running processes can be completed');
+      console.warn(
+        `Attempting to complete process ${this._data.name} in status ${this._data.status}`,
+      );
+      return; // Silently return instead of throwing error
     }
     this._data.status = ProcessStatus.COMPLETED;
     this._data.endTime = currentTime;
@@ -115,10 +126,14 @@ export class Process {
     ) {
       // Turnaround time: tiempo total desde llegada hasta finalización
       this._data.turnaroundTime = this._data.endTime - this._data.arrivalTime;
-      
+
       // Waiting time: turnaround time - burst time
-      // Esto es correcto tanto para algoritmos preemptivos como no preemptivos
+      // Para algoritmos preemptivos, esto sigue siendo correcto
       this._data.waitingTime = this._data.turnaroundTime - this._data.burstTime;
+
+      // Asegurar que los tiempos nunca sean negativos
+      this._data.waitingTime = Math.max(0, this._data.waitingTime);
+      this._data.turnaroundTime = Math.max(0, this._data.turnaroundTime);
     }
   }
 

@@ -31,9 +31,19 @@ export class SimulationAdapter {
     return scheduler.getAllProcesses().map(this.toProcessDTO);
   }
 
-  getSPProcesses(): ProcessDTO[] {
-    const scheduler = this.simulationService.getSPScheduler();
+  getSJFProcesses(): ProcessDTO[] {
+    const scheduler = this.simulationService.getSJFScheduler();
     return scheduler.getAllProcesses().map(this.toProcessDTO);
+  }
+
+  getSRTFProcesses(): ProcessDTO[] {
+    const scheduler = this.simulationService.getSRTFScheduler();
+    return scheduler.getAllProcesses().map(this.toProcessDTO);
+  }
+
+  // Backward compatibility - deprecated
+  getSPProcesses(): ProcessDTO[] {
+    return this.getSRTFProcesses();
   }
 
   getFCFSMetrics(): MetricsDTO {
@@ -42,10 +52,21 @@ export class SimulationAdapter {
     return this.toMetricsDTO(metrics, 'FCFS');
   }
 
-  getSPMetrics(): MetricsDTO {
-    const scheduler = this.simulationService.getSPScheduler();
+  getSJFMetrics(): MetricsDTO {
+    const scheduler = this.simulationService.getSJFScheduler();
     const metrics = scheduler.getMetrics(0);
-    return this.toMetricsDTO(metrics, 'SP');
+    return this.toMetricsDTO(metrics, 'SJF');
+  }
+
+  getSRTFMetrics(): MetricsDTO {
+    const scheduler = this.simulationService.getSRTFScheduler();
+    const metrics = scheduler.getMetrics(0);
+    return this.toMetricsDTO(metrics, 'SRTF');
+  }
+
+  // Backward compatibility - deprecated
+  getSPMetrics(): MetricsDTO {
+    return this.getSRTFMetrics();
   }
 
   private toProcessDTO(process: Process): ProcessDTO {

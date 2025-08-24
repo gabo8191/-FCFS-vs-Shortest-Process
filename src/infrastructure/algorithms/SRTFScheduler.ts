@@ -2,7 +2,7 @@ import { AlgorithmMetrics } from '../../domain/entities/AlgorithmMetrics';
 import { Process } from '../../domain/entities/Process';
 import { IProcessScheduler } from '../../domain/repositories/IProcessScheduler';
 
-export class SJFScheduler implements IProcessScheduler {
+export class SRTFScheduler implements IProcessScheduler {
   private readyQueue: Process[] = [];
   private runningProcess: Process | null = null;
   private completedProcesses: Process[] = [];
@@ -21,18 +21,31 @@ export class SJFScheduler implements IProcessScheduler {
 
   addProcess(process: Process): void {
     this.readyQueue.push(process);
-    // SJF sorts by burst time (original burst time, not remaining)
-    this.readyQueue.sort((a, b) => a.burstTime - b.burstTime);
+    this.sortReadyQueue();
+  }
+
+  private sortReadyQueue(): void {
+    this.readyQueue.sort((a, b) => a.remainingTime - b.remainingTime);
   }
 
   execute(timeStep: number): void {
     this.currentTime += timeStep;
 
+    // Move arrived processes from waiting to ready
+    this.readyQueue.forEach((process) => {
+      if (process.arrivalTime <= this.currentTime && process.isWaiting()) {
+        process.setReady();
+      }
+    });
+
+    // Check for preemption before executing current process
+    this.checkPreemption();
+
     // Execute current running process
     if (this.runningProcess) {
       if (!this.runningProcess.isRunning()) {
         console.warn(
-          `SJF: Process ${this.runningProcess.name} is not running, setting to running`,
+          `SRTF: Process ${this.runningProcess.name} is not running, setting to running`,
         );
         this.runningProcess.start(this.currentTime);
       }
@@ -46,7 +59,7 @@ export class SJFScheduler implements IProcessScheduler {
       }
     }
 
-    // If no process is running, select the shortest job that has arrived
+    // If no process is running, select the shortest available process
     if (!this.runningProcess) {
       const availableProcesses = this.readyQueue.filter(
         (p) =>
@@ -54,9 +67,8 @@ export class SJFScheduler implements IProcessScheduler {
       );
 
       if (availableProcesses.length > 0) {
-        // Get the shortest job by burst time (SJF - non-preemptive)
         const shortestJob = availableProcesses.reduce((shortest, current) =>
-          current.burstTime < shortest.burstTime ? current : shortest,
+          current.remainingTime < shortest.remainingTime ? current : shortest,
         );
 
         // Remove from ready queue
@@ -71,13 +83,47 @@ export class SJFScheduler implements IProcessScheduler {
         }
       }
     }
+  }
 
-    // Update process statuses for arrived processes
-    this.readyQueue.forEach((process) => {
-      if (process.arrivalTime <= this.currentTime && process.isWaiting()) {
-        process.setReady();
+  private checkPreemption(): void {
+    if (!this.runningProcess) {
+      return;
+    }
+
+    // Only consider processes that have actually arrived
+    const availableProcesses = this.readyQueue.filter(
+      (p) =>
+        p.arrivalTime <= this.currentTime && (p.isReady() || p.isWaiting()),
+    );
+
+    if (availableProcesses.length === 0) {
+      return;
+    }
+
+    const shortestInQueue = availableProcesses.reduce((shortest, current) =>
+      current.remainingTime < shortest.remainingTime ? current : shortest,
+    );
+
+    // Preempt if there's a shorter job available
+    if (shortestInQueue.remainingTime < this.runningProcess.remainingTime) {
+      // Move current process back to ready queue
+      this.runningProcess.setReady();
+      this.readyQueue.push(this.runningProcess);
+
+      // Remove the new process from ready queue
+      const index = this.readyQueue.indexOf(shortestInQueue);
+      if (index > -1) {
+        this.readyQueue.splice(index, 1);
       }
-    });
+
+      // Set new running process
+      this.runningProcess = shortestInQueue;
+      if (!this.runningProcess.isRunning()) {
+        this.runningProcess.start(this.currentTime);
+      }
+
+      this.sortReadyQueue();
+    }
   }
 
   getCurrentState(): {
@@ -110,6 +156,6 @@ export class SJFScheduler implements IProcessScheduler {
   }
 
   getAlgorithmName(): string {
-    return 'SJF (Shortest Job First - Non-Preemptive)';
+    return 'SRTF (Shortest Remaining Time First - Preemptive)';
   }
 }

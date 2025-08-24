@@ -1,5 +1,5 @@
 import React from 'react';
-import { SimulationView } from './presentation/views/SimulationView';
+import SimulationView from './presentation/views/SimulationView';
 
 const App: React.FC = () => {
   return <SimulationView />;

@@ -225,11 +225,10 @@ export const ControlPanelImproved: React.FC = () => {
                   handleConfigChange('maxProcesses', e.target.value)
                 }
                 min={5}
-                max={50}
                 className='w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500'
               />
               <p className='text-xs text-gray-500'>
-                Total de procesos a generar
+                Total de procesos a generar (sin límite)
               </p>
             </div>
           </div>

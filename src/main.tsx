@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
+import { runDebugTest } from './debug-algorithms';
 import './index.css';
+import { runComprehensiveTest } from './test-algorithms';
 
 // PWA Service Worker Registration
 if ('serviceWorker' in navigator) {
@@ -22,3 +24,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <App />
   </React.StrictMode>,
 );
+
+// Make debug functions available in browser console for development
+(window as any).runDebugTest = runDebugTest;
+(window as any).runComprehensiveTest = runComprehensiveTest;

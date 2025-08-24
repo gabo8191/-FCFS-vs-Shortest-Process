@@ -4,12 +4,14 @@ import { IProcessScheduler } from '../../domain/repositories/IProcessScheduler';
 export class SimulationService {
   constructor(
     private fcfsScheduler: IProcessScheduler,
-    private spScheduler: IProcessScheduler,
+    private sjfScheduler: IProcessScheduler,
+    private srtfScheduler: IProcessScheduler,
   ) {}
 
   startSimulation(): void {
     this.fcfsScheduler.reset();
-    this.spScheduler.reset();
+    this.sjfScheduler.reset();
+    this.srtfScheduler.reset();
   }
 
   pauseSimulation(): void {
@@ -18,24 +20,31 @@ export class SimulationService {
 
   resetSimulation(): void {
     this.fcfsScheduler.reset();
-    this.spScheduler.reset();
+    this.sjfScheduler.reset();
+    this.srtfScheduler.reset();
   }
 
   executeStep(timeStep: number): void {
     this.fcfsScheduler.execute(timeStep);
-    this.spScheduler.execute(timeStep);
+    this.sjfScheduler.execute(timeStep);
+    this.srtfScheduler.execute(timeStep);
   }
 
   addProcess(process: Process): void {
     this.fcfsScheduler.addProcess(process);
-    this.spScheduler.addProcess(process);
+    this.sjfScheduler.addProcess(process);
+    this.srtfScheduler.addProcess(process);
   }
 
   getFCFSScheduler(): IProcessScheduler {
     return this.fcfsScheduler;
   }
 
-  getSPScheduler(): IProcessScheduler {
-    return this.spScheduler;
+  getSJFScheduler(): IProcessScheduler {
+    return this.sjfScheduler;
+  }
+
+  getSRTFScheduler(): IProcessScheduler {
+    return this.srtfScheduler;
   }
 }

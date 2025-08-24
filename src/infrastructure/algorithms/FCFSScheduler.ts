@@ -37,13 +37,33 @@ export class FCFSScheduler implements IProcessScheduler {
       }
     }
 
-    if (!this.runningProcess && this.readyQueue.length > 0) {
-      this.runningProcess = this.readyQueue.shift()!;
-      this.runningProcess.start(this.currentTime);
+    // Only select next process if no process is running and there are processes that have arrived
+    if (!this.runningProcess) {
+      const availableProcesses = this.readyQueue.filter(
+        (p) =>
+          p.arrivalTime <= this.currentTime && (p.isReady() || p.isWaiting()),
+      );
+
+      if (availableProcesses.length > 0) {
+        // Get the first process that arrived (FCFS)
+        const nextProcess = availableProcesses.sort(
+          (a, b) => a.arrivalTime - b.arrivalTime,
+        )[0];
+
+        // Remove from ready queue
+        const index = this.readyQueue.indexOf(nextProcess);
+        if (index > -1) {
+          this.readyQueue.splice(index, 1);
+        }
+
+        this.runningProcess = nextProcess;
+        this.runningProcess.start(this.currentTime);
+      }
     }
 
+    // Update process statuses for arrived processes
     this.readyQueue.forEach((process) => {
-      if (process.isWaiting()) {
+      if (process.arrivalTime <= this.currentTime && process.isWaiting()) {
         process.setReady();
       }
     });

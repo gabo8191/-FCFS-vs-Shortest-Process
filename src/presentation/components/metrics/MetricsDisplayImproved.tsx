@@ -13,16 +13,16 @@ const MetricCard = memo<{
   color?: string;
   icon?: string;
 }>(({ label, value, unit = '', color = 'text-gray-800', icon }) => (
-  <div className='bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition-all duration-200'>
-    <div className='flex items-center justify-between mb-3'>
+  <div className='bg-gradient-to-br from-white to-gray-50 rounded-lg p-2 border border-gray-100'>
+    <div className='flex items-center justify-between mb-1'>
       <div className='text-xs font-medium text-gray-500 uppercase tracking-wide'>
         {label}
       </div>
-      {icon && <div className='text-lg opacity-60'>{icon}</div>}
+      {icon && <div className='text-xs opacity-60'>{icon}</div>}
     </div>
-    <div className={`text-2xl font-bold ${color} leading-none`}>
+    <div className={`text-sm font-bold ${color} leading-none`}>
       {typeof value === 'number' ? value.toFixed(2) : value}
-      <span className='text-sm font-normal text-gray-500 ml-1'>{unit}</span>
+      <span className='text-xs font-normal text-gray-500 ml-1'>{unit}</span>
     </div>
   </div>
 ));

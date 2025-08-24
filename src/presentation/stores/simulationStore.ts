@@ -2,7 +2,8 @@ import { create } from 'zustand';
 import { SimulationUseCase } from '../../application/use-cases/SimulationUseCase';
 import { SimulationConfig } from '../../domain/value-objects/SimulationConfig';
 import { FCFSScheduler } from '../../infrastructure/algorithms/FCFSScheduler';
-import { ShortestProcessScheduler } from '../../infrastructure/algorithms/ShortestProcessScheduler';
+import { SJFScheduler } from '../../infrastructure/algorithms/SJFScheduler';
+import { SRTFScheduler } from '../../infrastructure/algorithms/SRTFScheduler';
 
 interface SimulationStore {
   // State
@@ -30,8 +31,13 @@ interface SimulationStore {
 
 // Initialize the use case
 const fcfsScheduler = new FCFSScheduler();
-const spScheduler = new ShortestProcessScheduler();
-const simulationUseCase = new SimulationUseCase([fcfsScheduler, spScheduler]);
+const sjfScheduler = new SJFScheduler();
+const srtfScheduler = new SRTFScheduler();
+const simulationUseCase = new SimulationUseCase([
+  fcfsScheduler,
+  sjfScheduler,
+  srtfScheduler,
+]);
 
 export const useSimulationStore = create<SimulationStore>((set, get) => ({
   // Initial state
@@ -39,24 +45,28 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
   currentTime: 0,
   config: SimulationConfig.createDefault(),
   totalProcessesGenerated: 0,
-  maxProcesses: 20,
+  maxProcesses: 25, // Más procesos para mejor comparación
   _useCase: simulationUseCase,
 
   // Actions
   startSimulation: () => {
     const { _useCase } = get();
+    console.log('🚀 Starting simulation from store...');
     _useCase.startSimulation();
+    console.log('✅ Simulation started, setting isRunning to true');
     set({ isRunning: true });
   },
 
   pauseSimulation: () => {
     const { _useCase } = get();
+    console.log('⏸️ Pausing simulation from store...');
     _useCase.pauseSimulation();
     set({ isRunning: false });
   },
 
   resetSimulation: () => {
     const { _useCase } = get();
+    console.log('🔄 Resetting simulation from store...');
     _useCase.resetSimulation();
     set({
       isRunning: false,
@@ -76,8 +86,14 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
 
   executeStep: (timeStep: number) => {
     const { _useCase } = get();
+    console.log(`⏱️ Executing step with timeStep: ${timeStep}ms`);
     _useCase.executeStep(timeStep);
     const state = _useCase.getState();
+    console.log(`📊 State after step:`, {
+      currentTime: state.currentTime,
+      totalProcessesGenerated: state.totalProcessesGenerated,
+      isRunning: state.isRunning,
+    });
     set({
       currentTime: state.currentTime,
       totalProcessesGenerated: state.totalProcessesGenerated,

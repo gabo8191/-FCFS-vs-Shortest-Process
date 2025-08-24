@@ -31,6 +31,29 @@ export class ProcessGenerator {
     return new Process(processData);
   }
 
+  static generateFromData(data: {
+    id: number;
+    name: string;
+    arrivalTime: number;
+    burstTime: number;
+    size: number;
+    status: string;
+    remainingTime: number;
+  }): Process {
+    return new Process({
+      ...data,
+      status: ProcessStatus.WAITING,
+    });
+  }
+
+  static getNextId(): number {
+    return this.processIdCounter;
+  }
+
+  static incrementCounter(amount: number = 1): void {
+    this.processIdCounter += amount;
+  }
+
   static resetIdCounter(): void {
     this.processIdCounter = 1;
   }
