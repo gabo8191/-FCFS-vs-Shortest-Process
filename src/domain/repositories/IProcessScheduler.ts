@@ -3,7 +3,7 @@ import { Process } from '../entities/Process';
 
 export interface IProcessScheduler {
   addProcess(process: Process): void;
-  execute(timeStep: number): void;
+  execute(timeStep: number, globalTime?: number): void;
   reset(): void;
   getAllProcesses(): Process[];
   getCurrentState(): {

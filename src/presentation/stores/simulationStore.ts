@@ -45,7 +45,7 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
   currentTime: 0,
   config: SimulationConfig.createDefault(),
   totalProcessesGenerated: 0,
-  maxProcesses: 25, // Más procesos para mejor comparación
+  maxProcesses: 15, // Cantidad optimizada para mejor observación
   _useCase: simulationUseCase,
 
   // Actions
