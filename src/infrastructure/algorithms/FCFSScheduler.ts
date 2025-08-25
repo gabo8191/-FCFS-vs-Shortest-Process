@@ -20,12 +20,23 @@ export class FCFSScheduler implements IProcessScheduler {
   }
 
   addProcess(process: Process): void {
+    // Set initial status based on arrival time
+    if (process.arrivalTime <= this.currentTime) {
+      process.setReady();
+    } else {
+      process.setWaiting();
+    }
     this.readyQueue.push(process);
     this.readyQueue.sort((a, b) => a.arrivalTime - b.arrivalTime);
   }
 
-  execute(timeStep: number): void {
-    this.currentTime += timeStep;
+  execute(timeStep: number, globalTime?: number): void {
+    // Use global time if provided, otherwise increment local time
+    if (globalTime !== undefined) {
+      this.currentTime = globalTime;
+    } else {
+      this.currentTime += timeStep;
+    }
 
     if (this.runningProcess) {
       this.runningProcess.execute(timeStep);

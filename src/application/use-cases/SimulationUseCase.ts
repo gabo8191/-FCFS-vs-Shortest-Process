@@ -75,15 +75,15 @@ export class SimulationUseCase {
 
     const newTime = this.state.currentTime + timeStep;
 
-    // Execute all schedulers
+    // Execute all schedulers with synchronized time
     this.state.schedulers.forEach((scheduler) => {
-      scheduler.execute(timeStep);
+      scheduler.execute(timeStep, newTime);
     });
 
     // Generate new processes if needed
     const timeSinceLastGeneration = newTime - this.state.lastProcessGeneration;
     const generationIntervalMs =
-      this.state.config.processGenerationInterval * 200; // Much faster generation - every 400ms for 2 second config
+      this.state.config.processGenerationInterval * 1000; // More reasonable generation interval
 
     console.log('🔍 Process Generation Check:', {
       newTime,
@@ -101,19 +101,23 @@ export class SimulationUseCase {
       timeSinceLastGeneration >= generationIntervalMs &&
       this.state.totalProcessesGenerated < this.state.config.maxProcesses
     ) {
-      // Generate more processes aggressively
+      // Generate processes in a more controlled manner
       const remainingProcesses =
         this.state.config.maxProcesses - this.state.totalProcessesGenerated;
       let numProcessesToGenerate;
 
-      if (this.state.totalProcessesGenerated < 8) {
-        // Generate 3-5 processes at the beginning
-        numProcessesToGenerate = Math.min(5, remainingProcesses);
+      // Generate 1-2 processes at a time to avoid overwhelming the system
+      if (this.state.totalProcessesGenerated < 5) {
+        // Start with 2 processes
+        numProcessesToGenerate = Math.min(2, remainingProcesses);
       } else if (this.state.totalProcessesGenerated < 15) {
-        // Generate 2-3 processes in the middle
-        numProcessesToGenerate = Math.min(3, remainingProcesses);
+        // Generate 1-2 processes in the middle phase
+        numProcessesToGenerate = Math.min(
+          Math.random() > 0.5 ? 2 : 1, 
+          remainingProcesses
+        );
       } else {
-        // Generate 1-2 processes at the end
+        // Generate 1 process at a time near the end
         numProcessesToGenerate = Math.min(1, remainingProcesses);
       }
 
@@ -122,10 +126,11 @@ export class SimulationUseCase {
       );
 
       for (let i = 0; i < numProcessesToGenerate; i++) {
-        // Generate a base process with proper ID management
+        // Generate a base process with proper ID management and spread arrival times
+        const arrivalTimeOffset = i * (200 + Math.random() * 300); // 200-500ms offset between processes
         const baseProcess = ProcessGenerator.generateRandomProcess(
           this.state.config,
-          newTime + i * 50, // Smaller offset for more realistic arrival times
+          newTime + arrivalTimeOffset,
         );
 
         // Create independent copies for each scheduler

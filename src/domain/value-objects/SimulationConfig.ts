@@ -73,12 +73,12 @@ export class SimulationConfig {
   // Factory method for default configuration
   static createDefault(): SimulationConfig {
     return new SimulationConfig({
-      processGenerationInterval: 0.5, // Generate processes every 0.5 seconds
+      processGenerationInterval: 2, // Generate processes every 2 seconds
       minBurstTime: 1000,
       maxBurstTime: 5000,
       minProcessSize: 10,
       maxProcessSize: 100,
-      maxProcesses: 20,
+      maxProcesses: 15, // Reduced for better observation
     });
   }
 
