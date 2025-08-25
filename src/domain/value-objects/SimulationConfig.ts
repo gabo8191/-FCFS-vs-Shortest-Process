@@ -73,36 +73,48 @@ export class SimulationConfig {
   // Factory method for default configuration
   static createDefault(): SimulationConfig {
     return new SimulationConfig({
-      processGenerationInterval: 2, // Generate processes every 2 seconds
+      processGenerationInterval: 3, // Generate processes every 3 seconds
       minBurstTime: 1000,
-      maxBurstTime: 5000,
+      maxBurstTime: 8000, // Increased range for better differentiation
       minProcessSize: 10,
       maxProcessSize: 100,
-      maxProcesses: 15, // Reduced for better observation
+      maxProcesses: 20, // More processes to see patterns
     });
   }
 
   // Configuración para favorecer FCFS (procesos similares)
   static createFCFSFriendly(): SimulationConfig {
     return new SimulationConfig({
-      processGenerationInterval: 5, // Menos presión
-      minBurstTime: 4, // Rango muy estrecho
-      maxBurstTime: 6, // Ratio 1.5:1 - procesos similares
+      processGenerationInterval: 4, // Llegadas más espaciadas
+      minBurstTime: 3000, // Rango estrecho - procesos similares
+      maxBurstTime: 4000, // Ratio 1.33:1 - muy poca variabilidad
       minProcessSize: 20,
       maxProcessSize: 80,
-      maxProcesses: 20,
+      maxProcesses: 12, // Menos procesos para observar mejor
     });
   }
 
-  // Configuración para favorecer SJF (alta variabilidad)
+  // Configuración para favorecer SJF/SRTF (alta variabilidad)
   static createSJFFriendly(): SimulationConfig {
     return new SimulationConfig({
-      processGenerationInterval: 2, // Más presión
-      minBurstTime: 1, // Rango muy amplio
-      maxBurstTime: 12, // Ratio 12:1 - alta variabilidad
+      processGenerationInterval: 2, // Llegadas más frecuentes
+      minBurstTime: 500, // Rango muy amplio
+      maxBurstTime: 10000, // Ratio 20:1 - alta variabilidad
       minProcessSize: 5,
       maxProcessSize: 150,
-      maxProcesses: 30,
+      maxProcesses: 25, // Más procesos para ver el efecto
+    });
+  }
+
+  // Configuración IDEAL para demostrar diferencias claras
+  static createDemonstration(): SimulationConfig {
+    return new SimulationConfig({
+      processGenerationInterval: 2.5, // Balance entre observación y rapidez
+      minBurstTime: 800, // Rango muy amplio para mostrar diferencias
+      maxBurstTime: 12000, // Ratio 15:1 - excelente para comparaciones
+      minProcessSize: 10,
+      maxProcessSize: 120,
+      maxProcesses: 18, // Suficientes para ver patrones claros
     });
   }
 
@@ -110,11 +122,11 @@ export class SimulationConfig {
   static createBalanced(): SimulationConfig {
     return new SimulationConfig({
       processGenerationInterval: 3,
-      minBurstTime: 3, // Rango moderado
-      maxBurstTime: 7, // Ratio 2.33:1 equilibrado
+      minBurstTime: 2000, // Rango moderado
+      maxBurstTime: 6000, // Ratio 3:1 equilibrado
       minProcessSize: 15,
       maxProcessSize: 100,
-      maxProcesses: 25,
+      maxProcesses: 15,
     });
   }
 }

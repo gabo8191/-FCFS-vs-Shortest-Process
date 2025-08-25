@@ -8,9 +8,6 @@ export class SRTFScheduler implements IProcessScheduler {
   private runningProcess: Process | null = null;
   private completedProcesses: Process[] = [];
   private currentTime = 0;
-  private lastPreemptionTime = 0; // To prevent rapid ping-pong
-  private readonly MIN_PREEMPTION_THRESHOLD = 50; // Minimum time between preemptions (ms)
-  private readonly MIN_TIME_DIFFERENCE = 100; // Minimum time difference to justify preemption (ms)
 
   constructor() {
     this.reset();
@@ -22,7 +19,6 @@ export class SRTFScheduler implements IProcessScheduler {
     this.runningProcess = null;
     this.completedProcesses = [];
     this.currentTime = 0;
-    this.lastPreemptionTime = 0;
   }
 
   addProcess(process: Process): void {
@@ -53,21 +49,21 @@ export class SRTFScheduler implements IProcessScheduler {
 
     // Move arrived processes from waiting queue to ready queue
     const arrivedProcesses = this.waitingQueue.filter(
-      (process) => process.arrivalTime <= this.currentTime
+      (process) => process.arrivalTime <= this.currentTime,
     );
-    
+
     arrivedProcesses.forEach((process) => {
       // Remove from waiting queue
       const index = this.waitingQueue.indexOf(process);
       if (index > -1) {
         this.waitingQueue.splice(index, 1);
       }
-      
+
       // Add to ready queue
       process.setReady();
       this.readyQueue.push(process);
     });
-    
+
     // Re-sort ready queue after adding new processes
     this.sortReadyQueue();
 
@@ -134,16 +130,13 @@ export class SRTFScheduler implements IProcessScheduler {
       current.remainingTime < shortest.remainingTime ? current : shortest,
     );
 
-    // Prevent rapid ping-pong by enforcing a minimum time between preemptions
-    const timeSinceLastPreemption = this.currentTime - this.lastPreemptionTime;
-    if (timeSinceLastPreemption < this.MIN_PREEMPTION_THRESHOLD) {
-      return;
-    }
+    // SRTF Rule: Preempt if ANY process has shorter remaining time
+    // No artificial thresholds - pure algorithm implementation
+    if (shortestInQueue.remainingTime < this.runningProcess.remainingTime) {
+      console.log(
+        `🔄 SRTF Preemption: ${this.runningProcess.name} (${this.runningProcess.remainingTime}ms) → ${shortestInQueue.name} (${shortestInQueue.remainingTime}ms)`,
+      );
 
-    // Only preempt if the difference is significant enough to justify the overhead
-    const timeDifference = this.runningProcess.remainingTime - shortestInQueue.remainingTime;
-    
-    if (timeDifference >= this.MIN_TIME_DIFFERENCE) {
       // Move current process back to ready queue
       this.runningProcess.setReady();
       this.readyQueue.push(this.runningProcess);
@@ -158,9 +151,6 @@ export class SRTFScheduler implements IProcessScheduler {
       this.runningProcess = shortestInQueue;
       this.runningProcess.start(this.currentTime);
 
-      // Record preemption time
-      this.lastPreemptionTime = this.currentTime;
-      
       this.sortReadyQueue();
     }
   }

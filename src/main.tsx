@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import { runDebugTest } from './debug-algorithms';
 import './index.css';
+// import { testAlgorithmCompliance } from './test-algorithm-compliance';
 import { runComprehensiveTest } from './test-algorithms';
 
 // PWA Service Worker Registration

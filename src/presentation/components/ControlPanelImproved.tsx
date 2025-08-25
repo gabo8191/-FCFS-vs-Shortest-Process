@@ -96,7 +96,22 @@ export const ControlPanelImproved: React.FC = () => {
             <h3 className='text-sm font-semibold text-blue-900 mb-3'>
               ⚖️ Configuraciones de Equidad
             </h3>
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3'>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3'>
+              <button
+                onClick={() =>
+                  updateConfig(SimulationConfig.createDemonstration())
+                }
+                className='p-3 text-left bg-white rounded-lg border border-red-200 hover:border-red-400 transition-colors shadow-sm'
+              >
+                <div className='font-medium text-sm text-red-900'>
+                  🎭 DEMOSTRACIÓN
+                </div>
+                <div className='text-xs text-red-700 font-medium'>
+                  Diferencias claras
+                </div>
+                <div className='text-xs text-gray-600 mt-1'>Ratio 15:1</div>
+              </button>
+
               <button
                 onClick={() => updateConfig(SimulationConfig.createBalanced())}
                 className='p-3 text-left bg-white rounded-lg border border-blue-200 hover:border-blue-400 transition-colors'
@@ -105,7 +120,7 @@ export const ControlPanelImproved: React.FC = () => {
                   🎯 Balanceada
                 </div>
                 <div className='text-xs text-blue-700'>Más equitativa</div>
-                <div className='text-xs text-gray-600 mt-1'>Ratio 2.3:1</div>
+                <div className='text-xs text-gray-600 mt-1'>Ratio 3:1</div>
               </button>
 
               <button
@@ -118,7 +133,7 @@ export const ControlPanelImproved: React.FC = () => {
                   📋 Pro-FCFS
                 </div>
                 <div className='text-xs text-green-700'>Procesos similares</div>
-                <div className='text-xs text-gray-600 mt-1'>Ratio 1.5:1</div>
+                <div className='text-xs text-gray-600 mt-1'>Ratio 1.33:1</div>
               </button>
 
               <button
@@ -131,7 +146,7 @@ export const ControlPanelImproved: React.FC = () => {
                   ⚡ Pro-SJF
                 </div>
                 <div className='text-xs text-purple-700'>Alta variabilidad</div>
-                <div className='text-xs text-gray-600 mt-1'>Ratio 12:1</div>
+                <div className='text-xs text-gray-600 mt-1'>Ratio 20:1</div>
               </button>
 
               <button
@@ -144,7 +159,7 @@ export const ControlPanelImproved: React.FC = () => {
                 <div className='text-xs text-gray-700'>
                   Configuración mejorada
                 </div>
-                <div className='text-xs text-gray-600 mt-1'>Ratio 2.67:1</div>
+                <div className='text-xs text-gray-600 mt-1'>Ratio 8:1</div>
               </button>
             </div>
 
