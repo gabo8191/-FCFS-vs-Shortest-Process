@@ -1,4 +1,3 @@
-// Comprehensive test for scheduling algorithms
 import { Process, ProcessStatus } from './domain/entities/Process';
 import { FCFSScheduler } from './infrastructure/algorithms/FCFSScheduler';
 import { SJFScheduler } from './infrastructure/algorithms/SJFScheduler';
@@ -18,7 +17,6 @@ interface TestResult {
   totalTime: number;
 }
 
-// Test case with well-known expected results
 function createKnownTestCase(): Process[] {
   return [
     new Process({
@@ -67,18 +65,15 @@ function runAlgorithmTest(
 ): TestResult {
   scheduler.reset();
 
-  // Add all processes at the beginning
   processes.forEach((p) => scheduler.addProcess(p.clone()));
 
   let currentTime = 0;
   const timeStep = 1;
   let executionLog: string[] = [];
 
-  // Simulate execution step by step
   while (true) {
     const state = scheduler.getCurrentState();
 
-    // Log current state
     const runningInfo = state.runningProcess
       ? `${state.runningProcess.name}(${state.runningProcess.remainingTime})`
       : 'IDLE';
@@ -91,23 +86,19 @@ function runAlgorithmTest(
       `T${currentTime}: Running=${runningInfo}, Queue=[${queueInfo}]`,
     );
 
-    // Check if all processes are completed
     if (state.completedProcesses.length === processes.length) {
       break;
     }
 
-    // Execute one time step
     scheduler.execute(timeStep);
     currentTime += timeStep;
 
-    // Safety check
     if (currentTime > 50) {
       console.warn(`${name}: Simulation timeout at time ${currentTime}`);
       break;
     }
   }
 
-  // Collect results
   const allProcesses = scheduler.getAllProcesses();
   const completedProcesses = allProcesses.filter((p: Process) =>
     p.isCompleted(),
@@ -240,7 +231,6 @@ export function runComprehensiveTest(): void {
 
   compareAlgorithms(results);
 
-  // Expected results analysis
   console.log('\n=== ALGORITHM ANALYSIS ===');
   console.log('Expected characteristics:');
   console.log('• FCFS: Simple, fair, but can suffer from convoy effect');
@@ -248,5 +238,4 @@ export function runComprehensiveTest(): void {
   console.log('• SRTF: Best average waiting time, but may cause starvation');
 }
 
-// Make available in browser console
 (window as any).runComprehensiveTest = runComprehensiveTest;

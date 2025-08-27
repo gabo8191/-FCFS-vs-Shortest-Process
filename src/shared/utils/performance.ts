@@ -1,8 +1,4 @@
-/**
- * Performance utilities for the application
- */
 
-// Debounce function for performance optimization
 export const debounce = <T extends (...args: any[]) => any>(
   func: T,
   wait: number,
@@ -15,7 +11,6 @@ export const debounce = <T extends (...args: any[]) => any>(
   };
 };
 
-// Throttle function for performance optimization
 export const throttle = <T extends (...args: any[]) => any>(
   func: T,
   limit: number,
@@ -31,7 +26,6 @@ export const throttle = <T extends (...args: any[]) => any>(
   };
 };
 
-// Performance measurement utility
 export const measurePerformance = <T extends (...args: any[]) => any>(
   name: string,
   fn: T,
@@ -46,7 +40,6 @@ export const measurePerformance = <T extends (...args: any[]) => any>(
   }) as T;
 };
 
-// Memory usage utility
 export const logMemoryUsage = (label: string = 'Memory Usage'): void => {
   if ('memory' in performance) {
     const memory = (performance as any).memory;

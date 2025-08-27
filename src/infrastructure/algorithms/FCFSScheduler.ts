@@ -20,7 +20,6 @@ export class FCFSScheduler implements IProcessScheduler {
   }
 
   addProcess(process: Process): void {
-    // Set initial status based on arrival time
     if (process.arrivalTime <= this.currentTime) {
       process.setReady();
     } else {
@@ -31,7 +30,6 @@ export class FCFSScheduler implements IProcessScheduler {
   }
 
   execute(timeStep: number, globalTime?: number): void {
-    // Use global time if provided, otherwise increment local time
     if (globalTime !== undefined) {
       this.currentTime = globalTime;
     } else {
@@ -48,7 +46,6 @@ export class FCFSScheduler implements IProcessScheduler {
       }
     }
 
-    // Only select next process if no process is running and there are processes that have arrived
     if (!this.runningProcess) {
       const availableProcesses = this.readyQueue.filter(
         (p) =>
@@ -56,12 +53,10 @@ export class FCFSScheduler implements IProcessScheduler {
       );
 
       if (availableProcesses.length > 0) {
-        // Get the first process that arrived (FCFS)
         const nextProcess = availableProcesses.sort(
           (a, b) => a.arrivalTime - b.arrivalTime,
         )[0];
 
-        // Remove from ready queue
         const index = this.readyQueue.indexOf(nextProcess);
         if (index > -1) {
           this.readyQueue.splice(index, 1);
@@ -72,7 +67,6 @@ export class FCFSScheduler implements IProcessScheduler {
       }
     }
 
-    // Update process statuses for arrived processes
     this.readyQueue.forEach((process) => {
       if (process.arrivalTime <= this.currentTime && process.isWaiting()) {
         process.setReady();

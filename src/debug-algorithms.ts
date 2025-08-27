@@ -1,4 +1,3 @@
-// Debug functions for scheduling algorithms
 import { Process, ProcessStatus } from './domain/entities/Process';
 import { FCFSScheduler } from './infrastructure/algorithms/FCFSScheduler';
 import { SJFScheduler } from './infrastructure/algorithms/SJFScheduler';
@@ -53,7 +52,6 @@ function debugAlgorithm(
   console.log(`\n=== DEBUGGING ${name} ===`);
   scheduler.reset();
 
-  // Add all processes
   processes.forEach((p) => scheduler.addProcess(p.clone()));
 
   let currentTime = 0;
@@ -62,7 +60,6 @@ function debugAlgorithm(
   while (currentTime < maxTime) {
     const state = scheduler.getCurrentState();
 
-    // Log current state
     console.log(`\nTime ${currentTime}:`);
     console.log(
       `  Running: ${
@@ -83,18 +80,15 @@ function debugAlgorithm(
         .join(', ')}]`,
     );
 
-    // Check if all processes are completed
     if (state.completedProcesses.length === processes.length) {
       console.log(`\n${name} completed all processes at time ${currentTime}`);
       break;
     }
 
-    // Execute one time step
     scheduler.execute(1000);
     currentTime++;
   }
 
-  // Final metrics
   const completedProcesses = scheduler
     .getAllProcesses()
     .filter((p: any) => p.isCompleted());
@@ -126,7 +120,6 @@ export function runDebugTest(): void {
     console.log(`  ${p.name}: Arrival=${p.arrivalTime}, Burst=${p.burstTime}`);
   });
 
-  // Test all three algorithms
   const fcfsScheduler = new FCFSScheduler();
   const sjfScheduler = new SJFScheduler();
   const srtfScheduler = new SRTFScheduler();
@@ -150,5 +143,4 @@ export function runDebugTest(): void {
   console.log('\n🎯 DEBUG TEST COMPLETED FOR ALL THREE ALGORITHMS 🎯');
 }
 
-// Make available in browser console
 (window as any).runDebugTest = runDebugTest;

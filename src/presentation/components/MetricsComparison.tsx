@@ -55,10 +55,10 @@ export const MetricsComparison: React.FC<MetricsComparisonProps> = ({
   );
 
   const throughputComparison = compareMetric(
-    -fcfsMetrics.throughput, // Negative because higher is better
+    -fcfsMetrics.throughput,
     -sjfMetrics.throughput,
     -srtfMetrics.throughput,
-  ).map((item) => ({ ...item, value: -item.value })); // Convert back to positive
+  ).map((item) => ({ ...item, value: -item.value }));
 
   const turnaroundComparison = compareMetric(
     fcfsMetrics.averageTurnaroundTime,

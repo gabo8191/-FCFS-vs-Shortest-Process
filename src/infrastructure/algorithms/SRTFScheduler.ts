@@ -4,7 +4,7 @@ import { IProcessScheduler } from '../../domain/repositories/IProcessScheduler';
 
 export class SRTFScheduler implements IProcessScheduler {
   private readyQueue: Process[] = [];
-  private waitingQueue: Process[] = []; // Processes that haven't arrived yet
+  private waitingQueue: Process[] = [];
   private runningProcess: Process | null = null;
   private completedProcesses: Process[] = [];
   private currentTime = 0;
@@ -22,7 +22,6 @@ export class SRTFScheduler implements IProcessScheduler {
   }
 
   addProcess(process: Process): void {
-    // Add to appropriate queue based on arrival time
     if (process.arrivalTime <= this.currentTime) {
       process.setReady();
       this.readyQueue.push(process);
@@ -30,7 +29,6 @@ export class SRTFScheduler implements IProcessScheduler {
     } else {
       process.setWaiting();
       this.waitingQueue.push(process);
-      // Sort waiting queue by arrival time
       this.waitingQueue.sort((a, b) => a.arrivalTime - b.arrivalTime);
     }
   }
@@ -40,37 +38,30 @@ export class SRTFScheduler implements IProcessScheduler {
   }
 
   execute(timeStep: number, globalTime?: number): void {
-    // Use global time if provided, otherwise increment local time
     if (globalTime !== undefined) {
       this.currentTime = globalTime;
     } else {
       this.currentTime += timeStep;
     }
 
-    // Move arrived processes from waiting queue to ready queue
     const arrivedProcesses = this.waitingQueue.filter(
       (process) => process.arrivalTime <= this.currentTime,
     );
 
     arrivedProcesses.forEach((process) => {
-      // Remove from waiting queue
       const index = this.waitingQueue.indexOf(process);
       if (index > -1) {
         this.waitingQueue.splice(index, 1);
       }
 
-      // Add to ready queue
       process.setReady();
       this.readyQueue.push(process);
     });
 
-    // Re-sort ready queue after adding new processes
     this.sortReadyQueue();
 
-    // Check for preemption before executing current process
     this.checkPreemption();
 
-    // Execute current running process
     if (this.runningProcess) {
       if (!this.runningProcess.isRunning()) {
         console.warn(
@@ -88,7 +79,6 @@ export class SRTFScheduler implements IProcessScheduler {
       }
     }
 
-    // If no process is running, select the shortest available process
     if (!this.runningProcess) {
       const availableProcesses = this.readyQueue.filter(
         (p) =>
@@ -100,7 +90,6 @@ export class SRTFScheduler implements IProcessScheduler {
           current.remainingTime < shortest.remainingTime ? current : shortest,
         );
 
-        // Remove from ready queue
         const index = this.readyQueue.indexOf(shortestJob);
         if (index > -1) {
           this.readyQueue.splice(index, 1);
@@ -119,7 +108,6 @@ export class SRTFScheduler implements IProcessScheduler {
       return;
     }
 
-    // All processes in readyQueue should already be available (arrived and ready)
     const availableProcesses = this.readyQueue;
 
     if (availableProcesses.length === 0) {
@@ -130,24 +118,19 @@ export class SRTFScheduler implements IProcessScheduler {
       current.remainingTime < shortest.remainingTime ? current : shortest,
     );
 
-    // SRTF Rule: Preempt if ANY process has shorter remaining time
-    // No artificial thresholds - pure algorithm implementation
     if (shortestInQueue.remainingTime < this.runningProcess.remainingTime) {
       console.log(
         `🔄 SRTF Preemption: ${this.runningProcess.name} (${this.runningProcess.remainingTime}ms) → ${shortestInQueue.name} (${shortestInQueue.remainingTime}ms)`,
       );
 
-      // Move current process back to ready queue
       this.runningProcess.setReady();
       this.readyQueue.push(this.runningProcess);
 
-      // Remove the new process from ready queue
       const index = this.readyQueue.indexOf(shortestInQueue);
       if (index > -1) {
         this.readyQueue.splice(index, 1);
       }
 
-      // Set new running process
       this.runningProcess = shortestInQueue;
       this.runningProcess.start(this.currentTime);
 

@@ -14,7 +14,6 @@ export class AlgorithmMetrics {
     this._data = { ...data };
   }
 
-  // Getters
   get totalProcesses(): number {
     return this._data.totalProcesses;
   }
@@ -34,7 +33,6 @@ export class AlgorithmMetrics {
     return this._data.totalExecutionTime;
   }
 
-  // Business methods
   static calculateFromProcesses(
     processes: any[],
     currentTime: number,
@@ -71,7 +69,7 @@ export class AlgorithmMetrics {
     const averageWaitingTime = totalWaitingTime / completedProcesses.length;
     const averageTurnaroundTime =
       totalTurnaroundTime / completedProcesses.length;
-    const throughput = completedProcesses.length / (currentTime / 1000); // processes per second
+    const throughput = completedProcesses.length / (currentTime / 1000); 
     const cpuUtilization =
       currentTime > 0 ? (totalBurstTime / currentTime) * 100 : 0;
 
@@ -85,7 +83,6 @@ export class AlgorithmMetrics {
     });
   }
 
-  // Immutable data access
   toData(): AlgorithmMetricsData {
     return { ...this._data };
   }

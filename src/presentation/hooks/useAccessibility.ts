@@ -1,5 +1,4 @@
 export const useAccessibility = () => {
-  // Funciones de utilidad
   const announceToScreenReader = (
     message: string,
     priority: 'polite' | 'assertive' = 'polite',

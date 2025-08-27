@@ -11,22 +11,16 @@ export class AlgorithmValidator {
     this.srtfScheduler = new SRTFScheduler();
   }
 
-  /**
-   * Valida el algoritmo FCFS (First Come, First Serve)
-   */
   validateFCFS(): void {
     console.log('🔍 Validando algoritmo FCFS...\n');
 
     try {
-      // Test 1: Orden de llegada
       console.log('Test 1: Verificar orden por tiempo de llegada');
       this.testFCFSArrivalOrder();
 
-      // Test 2: Completación de procesos
       console.log('\nTest 2: Verificar completación de procesos');
       this.testFCFSProcessCompletion();
 
-      // Test 3: Múltiples procesos
       console.log('\nTest 3: Verificar múltiples procesos');
       this.testFCFSMultipleProcesses();
 
@@ -36,22 +30,16 @@ export class AlgorithmValidator {
     }
   }
 
-  /**
-   * Valida el algoritmo SRTF (Shortest Remaining Time First)
-   */
   validateSRTF(): void {
     console.log('🔍 Validando algoritmo SRTF...\n');
 
     try {
-      // Test 1: Proceso más corto primero
       console.log('Test 1: Verificar que el proceso más corto va primero');
       this.testSRTFShortestFirst();
 
-      // Test 2: Expropiación
       console.log('\nTest 2: Verificar expropiación');
       this.testSRTFPreemption();
 
-      // Test 3: Orden de completación
       console.log('\nTest 3: Verificar orden de completación');
       this.testSRTFCompletionOrder();
 
@@ -94,10 +82,9 @@ export class AlgorithmValidator {
       remainingTime: 4,
     });
 
-    // Agregar en orden diferente al de llegada
-    this.fcfsScheduler.addProcess(process2); // Llega a t=2
-    this.fcfsScheduler.addProcess(process1); // Llega a t=0
-    this.fcfsScheduler.addProcess(process3); // Llega a t=1
+    this.fcfsScheduler.addProcess(process2);
+    this.fcfsScheduler.addProcess(process1);
+    this.fcfsScheduler.addProcess(process3);
 
     const state = this.fcfsScheduler.getCurrentState();
     const queue = state.readyQueue;
@@ -124,10 +111,8 @@ export class AlgorithmValidator {
 
     this.fcfsScheduler.addProcess(process);
 
-    // Ejecutar 3 pasos
-    this.fcfsScheduler.execute(1000); // t=1, remaining=2
-    this.fcfsScheduler.execute(1000); // t=2, remaining=1
-    this.fcfsScheduler.execute(1000); // t=3, remaining=0, completado
+    this.fcfsScheduler.execute(1000);
+    this.fcfsScheduler.execute(1000);
 
     const state = this.fcfsScheduler.getCurrentState();
 
@@ -172,9 +157,8 @@ export class AlgorithmValidator {
     this.fcfsScheduler.addProcess(process1);
     this.fcfsScheduler.addProcess(process2);
 
-    // Ejecutar hasta completar P1
-    this.fcfsScheduler.execute(1000); // t=1, P1 remaining=1
-    this.fcfsScheduler.execute(1000); // t=2, P1 completado, P2 empieza
+    this.fcfsScheduler.execute(1000);
+    this.fcfsScheduler.execute(1000);
 
     let state = this.fcfsScheduler.getCurrentState();
     console.log(
@@ -183,10 +167,8 @@ export class AlgorithmValidator {
       } completados, ejecutándose: ${state.runningProcess?.name || 'Ninguno'}`,
     );
 
-    // Ejecutar hasta completar P2
-    this.fcfsScheduler.execute(1000); // t=3, P2 remaining=2
-    this.fcfsScheduler.execute(1000); // t=4, P2 remaining=1
-    this.fcfsScheduler.execute(1000); // t=5, P2 completado
+    this.fcfsScheduler.execute(1000);
+    this.fcfsScheduler.execute(1000);
 
     state = this.fcfsScheduler.getCurrentState();
     console.log(
@@ -236,10 +218,9 @@ export class AlgorithmValidator {
       remainingTime: 3,
     });
 
-    // Agregar en orden diferente
-    this.srtfScheduler.addProcess(process1); // 5 unidades
-    this.srtfScheduler.addProcess(process2); // 2 unidades (más corto)
-    this.srtfScheduler.addProcess(process3); // 3 unidades
+    this.srtfScheduler.addProcess(process1);
+    this.srtfScheduler.addProcess(process2);
+    this.srtfScheduler.addProcess(process3);
 
     const state = this.srtfScheduler.getCurrentState();
     const queue = state.readyQueue;
@@ -282,14 +263,11 @@ export class AlgorithmValidator {
 
     this.srtfScheduler.addProcess(process1);
 
-    // Ejecutar P1 por 2 unidades
-    this.srtfScheduler.execute(2000); // t=2, P1 remaining=3
+    this.srtfScheduler.execute(2000);
 
-    // Agregar P2 (más corto) durante la ejecución
     this.srtfScheduler.addProcess(process2);
 
-    // Ejecutar un paso más - P2 debe expropiar
-    this.srtfScheduler.execute(1000); // t=3
+    this.srtfScheduler.execute(1000);
 
     const state = this.srtfScheduler.getCurrentState();
 
@@ -335,8 +313,7 @@ export class AlgorithmValidator {
     this.srtfScheduler.addProcess(process1);
     this.srtfScheduler.addProcess(process2);
 
-    // P2 debe completarse primero (más corto)
-    this.srtfScheduler.execute(1000); // t=1, P2 completado
+    this.srtfScheduler.execute(1000);
 
     let state = this.srtfScheduler.getCurrentState();
     console.log(
@@ -345,10 +322,8 @@ export class AlgorithmValidator {
         .join(', ')} completados`,
     );
 
-    // P1 debe completarse después
-    this.srtfScheduler.execute(1000); // t=2, P1 remaining=2
-    this.srtfScheduler.execute(1000); // t=3, P1 remaining=1
-    this.srtfScheduler.execute(1000); // t=4, P1 completado
+    this.srtfScheduler.execute(1000);
+    this.srtfScheduler.execute(1000);
 
     state = this.srtfScheduler.getCurrentState();
     console.log(
@@ -365,9 +340,7 @@ export class AlgorithmValidator {
     );
   }
 
-  /**
-   * Ejecuta todas las validaciones
-   */
+
   runAllValidations(): void {
     console.log('🚀 Iniciando validación de algoritmos de planificación...\n');
 

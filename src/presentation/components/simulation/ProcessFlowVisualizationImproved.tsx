@@ -129,7 +129,6 @@ export const ProcessFlowVisualizationImproved: React.FC<ProcessFlowVisualization
     const readyProcesses = processes.filter((p) => p.isReady());
     const completedProcesses = processes.filter((p) => p.isCompleted());
 
-    // Detectar movimientos de procesos
     useEffect(() => {
       setPreviousProcesses(processes);
     }, [processes]);
@@ -150,7 +149,6 @@ export const ProcessFlowVisualizationImproved: React.FC<ProcessFlowVisualization
     return (
       <div className='ios-card-elevated h-full'>
         <div className='space-y-5'>
-          {/* Header estilo iOS */}
           <div className='pb-3 border-b border-gray-100'>
             <div className='flex items-center justify-between'>
               <div>
@@ -179,7 +177,6 @@ export const ProcessFlowVisualizationImproved: React.FC<ProcessFlowVisualization
             </div>
           </div>
 
-          {/* CPU - Proceso en Ejecución estilo iOS */}
           <div>
             <div className='flex items-center space-x-2 mb-3'>
               <div
@@ -220,7 +217,6 @@ export const ProcessFlowVisualizationImproved: React.FC<ProcessFlowVisualization
             </div>
           </div>
 
-          {/* Cola de Listos estilo iOS */}
           <div>
             <div className='flex items-center justify-between mb-3'>
               <div className='flex items-center space-x-2'>
@@ -263,7 +259,6 @@ export const ProcessFlowVisualizationImproved: React.FC<ProcessFlowVisualization
             </div>
           </div>
 
-          {/* Procesos Completados estilo iOS */}
           <div>
             <div className='flex items-center justify-between mb-3'>
               <div className='flex items-center space-x-2'>
@@ -295,7 +290,6 @@ export const ProcessFlowVisualizationImproved: React.FC<ProcessFlowVisualization
             </div>
           </div>
 
-          {/* Estadísticas rápidas estilo iOS */}
           <div className='ios-card bg-gray-50'>
             <div className='grid grid-cols-3 gap-3 text-center'>
               <div>

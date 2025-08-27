@@ -41,7 +41,6 @@ export class SimulationAdapter {
     return scheduler.getAllProcesses().map(this.toProcessDTO);
   }
 
-  // Backward compatibility - deprecated
   getSPProcesses(): ProcessDTO[] {
     return this.getSRTFProcesses();
   }
@@ -64,7 +63,6 @@ export class SimulationAdapter {
     return this.toMetricsDTO(metrics, 'SRTF');
   }
 
-  // Backward compatibility - deprecated
   getSPMetrics(): MetricsDTO {
     return this.getSRTFMetrics();
   }

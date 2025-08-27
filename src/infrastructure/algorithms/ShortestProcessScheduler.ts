@@ -20,13 +20,10 @@ export class SRTFScheduler implements IProcessScheduler {
   }
 
   addProcess(process: Process): void {
-    // Only add processes that have arrived
     if (process.arrivalTime <= this.currentTime) {
       this.readyQueue.push(process);
       this.sortReadyQueue();
     } else {
-      // Store processes that haven't arrived yet (for proper arrival handling)
-      // For now, just add them to ready queue - arrival time will be handled in execute
       this.readyQueue.push(process);
       this.sortReadyQueue();
     }
@@ -39,22 +36,18 @@ export class SRTFScheduler implements IProcessScheduler {
   execute(timeStep: number): void {
     this.currentTime += timeStep;
 
-    // Move arrived processes from waiting to ready
     this.readyQueue.forEach((process) => {
       if (process.arrivalTime <= this.currentTime && process.isWaiting()) {
         process.setReady();
       }
     });
 
-    // Only consider processes that have actually arrived and are ready
     const availableProcesses = this.readyQueue.filter(
       (p) => p.arrivalTime <= this.currentTime && p.isReady(),
     );
 
-    // Check for preemption before executing current process
     this.checkPreemption(availableProcesses);
 
-    // Execute current running process
     if (this.runningProcess && this.runningProcess.isRunning()) {
       this.runningProcess.execute(timeStep);
 
@@ -65,13 +58,11 @@ export class SRTFScheduler implements IProcessScheduler {
       }
     }
 
-    // If no process is running, select the shortest available process
     if (!this.runningProcess && availableProcesses.length > 0) {
       const shortestJob = availableProcesses.reduce((shortest, current) =>
         current.remainingTime < shortest.remainingTime ? current : shortest,
       );
 
-      // Remove from ready queue
       const index = this.readyQueue.indexOf(shortestJob);
       if (index > -1) {
         this.readyQueue.splice(index, 1);
@@ -97,22 +88,17 @@ export class SRTFScheduler implements IProcessScheduler {
       current.remainingTime < shortest.remainingTime ? current : shortest,
     );
 
-    // Only preempt if there's a significantly shorter process
     if (shortestInQueue.remainingTime < this.runningProcess.remainingTime) {
-      // Move current running process back to ready queue
       this.runningProcess.setReady();
       this.readyQueue.push(this.runningProcess);
 
-      // Remove the new process from ready queue
       const index = this.readyQueue.indexOf(shortestInQueue);
       if (index > -1) {
         this.readyQueue.splice(index, 1);
       }
 
-      // Set the new running process
       this.runningProcess = shortestInQueue;
 
-      // Start the new process if it hasn't been started yet
       if (!this.runningProcess.isRunning()) {
         this.runningProcess.start(this.currentTime);
       }

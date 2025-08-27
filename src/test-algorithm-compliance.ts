@@ -2,21 +2,17 @@ import { Process, ProcessStatus } from './domain/entities/Process';
 import { SJFScheduler } from './infrastructure/algorithms/SJFScheduler';
 import { SRTFScheduler } from './infrastructure/algorithms/SRTFScheduler';
 
-/**
- * Test específico para verificar que SJF y SRTF cumplan las reglas exactas
- */
 
 function testSJFNonPreemptive(): void {
   console.log('🔍 Testing SJF Non-Preemptive Behavior...\n');
 
   const scheduler = new SJFScheduler();
 
-  // Crear procesos con tiempos conocidos
   const p1 = new Process({
     id: 1,
     name: 'P1',
     arrivalTime: 0,
-    burstTime: 8000, // Proceso largo
+    burstTime: 8000,
     size: 50,
     status: ProcessStatus.WAITING,
     remainingTime: 8000,
@@ -25,8 +21,8 @@ function testSJFNonPreemptive(): void {
   const p2 = new Process({
     id: 2,
     name: 'P2',
-    arrivalTime: 1000, // Llega después, pero es más corto
-    burstTime: 2000, // Proceso corto
+    arrivalTime: 1000,
+    burstTime: 2000,
     size: 30,
     status: ProcessStatus.WAITING,
     remainingTime: 2000,
@@ -35,14 +31,13 @@ function testSJFNonPreemptive(): void {
   const p3 = new Process({
     id: 3,
     name: 'P3',
-    arrivalTime: 2000, // Llega aún después, muy corto
-    burstTime: 1000, // Proceso muy corto
+    arrivalTime: 2000,
+    burstTime: 1000,
     size: 20,
     status: ProcessStatus.WAITING,
     remainingTime: 1000,
   });
 
-  // Agregar procesos
   scheduler.addProcess(p1);
   scheduler.addProcess(p2);
   scheduler.addProcess(p3);
@@ -52,17 +47,14 @@ function testSJFNonPreemptive(): void {
   console.log(`  P2: Arrival=1000ms, Burst=2000ms`);
   console.log(`  P3: Arrival=2000ms, Burst=1000ms\n`);
 
-  // Simular ejecución
   console.log('Simulación SJF:');
 
-  // t=0: P1 debe empezar (único disponible)
   scheduler.execute(1000, 0);
   let state = scheduler.getCurrentState();
   console.log(
     `t=0ms: Running=${state.runningProcess?.name}, Ready=${state.readyQueue.length}`,
   );
 
-  // t=1000: P2 llega, pero P1 NO debe ser interrumpido (SJF es no preemptivo)
   scheduler.execute(1000, 1000);
   state = scheduler.getCurrentState();
   console.log(
@@ -70,7 +62,6 @@ function testSJFNonPreemptive(): void {
   );
   console.log(`  ✓ P1 should continue running despite P2 arrival`);
 
-  // t=2000: P3 llega, P1 aún debe continuar
   scheduler.execute(1000, 2000);
   state = scheduler.getCurrentState();
   console.log(
@@ -78,7 +69,6 @@ function testSJFNonPreemptive(): void {
   );
   console.log(`  ✓ P1 should continue running despite P3 arrival`);
 
-  // Continuar hasta que P1 termine
   for (let t = 3000; t <= 8000; t += 1000) {
     scheduler.execute(1000, t);
     state = scheduler.getCurrentState();
@@ -88,7 +78,6 @@ function testSJFNonPreemptive(): void {
     }
   }
 
-  // t=8000: P1 debe haber terminado, ahora debe elegir P3 (más corto que P2)
   scheduler.execute(1000, 8000);
   state = scheduler.getCurrentState();
   console.log(
@@ -111,12 +100,11 @@ function testSRTFPreemptive(): void {
 
   const scheduler = new SRTFScheduler();
 
-  // Crear procesos para probar preemption
   const p1 = new Process({
     id: 1,
     name: 'P1',
     arrivalTime: 0,
-    burstTime: 10000, // Proceso largo
+    burstTime: 10000,
     size: 50,
     status: ProcessStatus.WAITING,
     remainingTime: 10000,
@@ -125,7 +113,7 @@ function testSRTFPreemptive(): void {
   const p2 = new Process({
     id: 2,
     name: 'P2',
-    arrivalTime: 2000, // Llega después, más corto
+    arrivalTime: 2000,
     burstTime: 3000,
     size: 30,
     status: ProcessStatus.WAITING,
@@ -135,14 +123,13 @@ function testSRTFPreemptive(): void {
   const p3 = new Process({
     id: 3,
     name: 'P3',
-    arrivalTime: 3000, // Llega después, aún más corto
+    arrivalTime: 3000,
     burstTime: 1000,
     size: 20,
     status: ProcessStatus.WAITING,
     remainingTime: 1000,
   });
 
-  // Agregar procesos
   scheduler.addProcess(p1);
   scheduler.addProcess(p2);
   scheduler.addProcess(p3);
@@ -154,21 +141,18 @@ function testSRTFPreemptive(): void {
 
   console.log('Simulación SRTF:');
 
-  // t=0: P1 debe empezar
   scheduler.execute(1000, 0);
   let state = scheduler.getCurrentState();
   console.log(
     `t=0ms: Running=${state.runningProcess?.name}, Remaining=${state.runningProcess?.remainingTime}ms`,
   );
 
-  // t=1000: P1 sigue ejecutándose
   scheduler.execute(1000, 1000);
   state = scheduler.getCurrentState();
   console.log(
     `t=1000ms: Running=${state.runningProcess?.name}, Remaining=${state.runningProcess?.remainingTime}ms`,
   );
 
-  // t=2000: P2 llega, debe preemptar a P1 (P2 tiene 3000ms < P1 remaining ~8000ms)
   scheduler.execute(1000, 2000);
   state = scheduler.getCurrentState();
   console.log(
@@ -183,7 +167,6 @@ function testSRTFPreemptive(): void {
     );
   }
 
-  // t=3000: P3 llega, debe preemptar a P2 (P3 tiene 1000ms < P2 remaining ~2000ms)
   scheduler.execute(1000, 3000);
   state = scheduler.getCurrentState();
   console.log(
@@ -198,7 +181,6 @@ function testSRTFPreemptive(): void {
     );
   }
 
-  // t=4000: P3 debe terminar, ahora debe elegir entre P1 y P2 (P2 tiene menos remaining time)
   scheduler.execute(1000, 4000);
   state = scheduler.getCurrentState();
   console.log(
@@ -239,5 +221,4 @@ function testAlgorithmCompliance(): void {
 
 export { testAlgorithmCompliance };
 
-// Make available in browser console
 (window as any).testAlgorithmCompliance = testAlgorithmCompliance;

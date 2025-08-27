@@ -14,9 +14,7 @@ export class SimulationService {
     this.srtfScheduler.reset();
   }
 
-  pauseSimulation(): void {
-    // Implementation for pausing
-  }
+  pauseSimulation(): void {}
 
   resetSimulation(): void {
     this.fcfsScheduler.reset();

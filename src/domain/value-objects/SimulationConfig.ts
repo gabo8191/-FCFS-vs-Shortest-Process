@@ -1,5 +1,5 @@
 export interface SimulationConfigData {
-  processGenerationInterval: number; // segundos
+  processGenerationInterval: number;
   minBurstTime: number;
   maxBurstTime: number;
   minProcessSize: number;
@@ -41,7 +41,6 @@ export class SimulationConfig {
     }
   }
 
-  // Getters
   get processGenerationInterval(): number {
     return this._data.processGenerationInterval;
   }
@@ -61,7 +60,6 @@ export class SimulationConfig {
     return this._data.maxProcesses;
   }
 
-  // Immutable data access
   toData(): SimulationConfigData {
     return { ...this._data };
   }
@@ -70,60 +68,55 @@ export class SimulationConfig {
     return new SimulationConfig({ ...this._data });
   }
 
-  // Factory method for default configuration
   static createDefault(): SimulationConfig {
     return new SimulationConfig({
-      processGenerationInterval: 3, // Generate processes every 3 seconds
+      processGenerationInterval: 3,
       minBurstTime: 1000,
-      maxBurstTime: 8000, // Increased range for better differentiation
+      maxBurstTime: 8000,
       minProcessSize: 10,
       maxProcessSize: 100,
-      maxProcesses: 20, // More processes to see patterns
+      maxProcesses: 20,
     });
   }
 
-  // Configuración para favorecer FCFS (procesos similares)
   static createFCFSFriendly(): SimulationConfig {
     return new SimulationConfig({
-      processGenerationInterval: 4, // Llegadas más espaciadas
-      minBurstTime: 3000, // Rango estrecho - procesos similares
-      maxBurstTime: 4000, // Ratio 1.33:1 - muy poca variabilidad
+      processGenerationInterval: 4,
+      minBurstTime: 3000,
+      maxBurstTime: 4000,
       minProcessSize: 20,
       maxProcessSize: 80,
-      maxProcesses: 12, // Menos procesos para observar mejor
+        maxProcesses: 12,
     });
   }
 
-  // Configuración para favorecer SJF/SRTF (alta variabilidad)
   static createSJFFriendly(): SimulationConfig {
     return new SimulationConfig({
-      processGenerationInterval: 2, // Llegadas más frecuentes
-      minBurstTime: 500, // Rango muy amplio
-      maxBurstTime: 10000, // Ratio 20:1 - alta variabilidad
+      processGenerationInterval: 2,
+      minBurstTime: 500,
+      maxBurstTime: 10000,
       minProcessSize: 5,
       maxProcessSize: 150,
-      maxProcesses: 25, // Más procesos para ver el efecto
+      maxProcesses: 25,
     });
   }
 
-  // Configuración IDEAL para demostrar diferencias claras
   static createDemonstration(): SimulationConfig {
     return new SimulationConfig({
-      processGenerationInterval: 2.5, // Balance entre observación y rapidez
-      minBurstTime: 800, // Rango muy amplio para mostrar diferencias
-      maxBurstTime: 12000, // Ratio 15:1 - excelente para comparaciones
+      processGenerationInterval: 2.5,
+      minBurstTime: 800,
+      maxBurstTime: 12000,
       minProcessSize: 10,
       maxProcessSize: 120,
-      maxProcesses: 18, // Suficientes para ver patrones claros
+      maxProcesses: 18,
     });
   }
 
-  // Configuración balanceada (la más equitativa)
   static createBalanced(): SimulationConfig {
     return new SimulationConfig({
       processGenerationInterval: 3,
-      minBurstTime: 2000, // Rango moderado
-      maxBurstTime: 6000, // Ratio 3:1 equilibrado
+      minBurstTime: 2000,
+      maxBurstTime: 6000,
       minProcessSize: 15,
       maxProcessSize: 100,
       maxProcesses: 15,

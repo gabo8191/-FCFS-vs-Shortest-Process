@@ -6,30 +6,25 @@ import { SJFScheduler } from '../../infrastructure/algorithms/SJFScheduler';
 import { SRTFScheduler } from '../../infrastructure/algorithms/SRTFScheduler';
 
 interface SimulationStore {
-  // State
   isRunning: boolean;
   currentTime: number;
   config: SimulationConfig;
   totalProcessesGenerated: number;
   maxProcesses: number;
 
-  // Actions
   startSimulation: () => void;
   pauseSimulation: () => void;
   resetSimulation: () => void;
   updateConfig: (config: SimulationConfig) => void;
   executeStep: (timeStep: number) => void;
 
-  // Getters
   getScheduler: (algorithmName: string) => any;
   getMetrics: (algorithmName: string) => any;
   getAllProcesses: (algorithmName: string) => any[];
 
-  // Internal
   _useCase: SimulationUseCase;
 }
 
-// Initialize the use case
 const fcfsScheduler = new FCFSScheduler();
 const sjfScheduler = new SJFScheduler();
 const srtfScheduler = new SRTFScheduler();
@@ -40,15 +35,13 @@ const simulationUseCase = new SimulationUseCase([
 ]);
 
 export const useSimulationStore = create<SimulationStore>((set, get) => ({
-  // Initial state
   isRunning: false,
   currentTime: 0,
   config: SimulationConfig.createDefault(),
   totalProcessesGenerated: 0,
-  maxProcesses: 15, // Cantidad optimizada para mejor observación
+  maxProcesses: 15,
   _useCase: simulationUseCase,
 
-  // Actions
   startSimulation: () => {
     const { _useCase } = get();
     console.log('🚀 Starting simulation from store...');
@@ -100,7 +93,6 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
     });
   },
 
-  // Getters
   getScheduler: (algorithmName: string) => {
     const { _useCase } = get();
     return _useCase.getScheduler(algorithmName);

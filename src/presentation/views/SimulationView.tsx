@@ -18,10 +18,8 @@ export const SimulationView: React.FC = () => {
 
   const { announceToScreenReader } = useAccessibility();
 
-  // ¡¡¡ESTO ES CRÍTICO!!! - Sin esto el loop no funciona
   useSimulationLoop();
 
-  // Get processes for each algorithm
   const fcfsProcesses = getAllProcesses('FCFS (First Come, First Serve)');
   const sjfProcesses = getAllProcesses(
     'SJF (Shortest Job First - Non-Preemptive)',
@@ -41,7 +39,6 @@ export const SimulationView: React.FC = () => {
     }
   }, [isRunning, announceToScreenReader]);
 
-  // Debug logging
   React.useEffect(() => {
     console.log('🔍 SimulationView Debug:', {
       isRunning,
@@ -72,7 +69,6 @@ export const SimulationView: React.FC = () => {
   return (
     <div className='min-h-screen bg-gray-50 p-6 overflow-y-auto'>
       <div className='max-w-7xl mx-auto'>
-        {/* Header */}
         <div className='text-center mb-8'>
           <h1 className='text-3xl font-semibold text-gray-900 mb-2'>
             Simulador de Algoritmos de Planificación
@@ -82,7 +78,6 @@ export const SimulationView: React.FC = () => {
           </p>
         </div>
 
-        {/* Status Bar */}
         <div className='bg-white rounded-3xl shadow-sm border border-gray-100 p-6 mb-8'>
           <div className='grid grid-cols-2 md:grid-cols-4 gap-6 text-center'>
             <div>
@@ -124,12 +119,10 @@ export const SimulationView: React.FC = () => {
           </div>
         </div>
 
-        {/* Control Panel */}
         <div className='mb-8'>
           <ControlPanelImproved />
         </div>
 
-        {/* Main Comparison Table */}
         <div className='bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8'>
           <div className='bg-gray-50 border-b border-gray-100 px-6 py-4'>
             <h2 className='text-xl font-semibold text-gray-900 text-center'>
@@ -162,7 +155,6 @@ export const SimulationView: React.FC = () => {
                 </tr>
               </thead>
               <tbody className='divide-y divide-gray-50'>
-                {/* FCFS Row */}
                 <tr className='hover:bg-gray-25 transition-colors duration-200'>
                   <td className='px-6 py-5'>
                     <div className='flex items-center gap-4'>
@@ -229,7 +221,6 @@ export const SimulationView: React.FC = () => {
                   </td>
                 </tr>
 
-                {/* SJF Row */}
                 <tr className='hover:bg-gray-25 transition-colors duration-200'>
                   <td className='px-6 py-5'>
                     <div className='flex items-center gap-4'>
@@ -295,7 +286,6 @@ export const SimulationView: React.FC = () => {
                   </td>
                 </tr>
 
-                {/* SRTF Row */}
                 <tr className='hover:bg-gray-25 transition-colors duration-200'>
                   <td className='px-6 py-5'>
                     <div className='flex items-center gap-4'>
@@ -366,7 +356,6 @@ export const SimulationView: React.FC = () => {
           </div>
         </div>
 
-        {/* Process Lists */}
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6'>
           <div className='bg-white rounded-xl shadow-sm border border-gray-200'>
             <div className='px-6 py-4 border-b border-gray-100'>
@@ -543,7 +532,6 @@ export const SimulationView: React.FC = () => {
           </div>
         </div>
 
-        {/* Metrics Comparison */}
         <div className='mb-6'>
           <MetricsComparison
             fcfsMetrics={fcfsMetrics}
@@ -552,7 +540,7 @@ export const SimulationView: React.FC = () => {
           />
         </div>
 
-        {/* PWA Status */}
+              
         <PWAStatus />
       </div>
     </div>

@@ -28,7 +28,6 @@ export class SimulationUseCase {
       metrics: new Map(),
     };
 
-    // Initialize schedulers
     schedulers.forEach((scheduler) => {
       this.state.schedulers.set(scheduler.getAlgorithmName(), scheduler);
     });
@@ -48,15 +47,12 @@ export class SimulationUseCase {
     this.state.lastProcessGeneration = 0;
     this.state.totalProcessesGenerated = 0;
 
-    // Reset all schedulers
     this.state.schedulers.forEach((scheduler) => {
       scheduler.reset();
     });
 
-    // Reset metrics
     this.state.metrics.clear();
 
-    // Reset process generator counter
     import('../../infrastructure/generators/ProcessGenerator').then(
       ({ ProcessGenerator }) => {
         ProcessGenerator.resetIdCounter();
@@ -75,15 +71,13 @@ export class SimulationUseCase {
 
     const newTime = this.state.currentTime + timeStep;
 
-    // Execute all schedulers with synchronized time
     this.state.schedulers.forEach((scheduler) => {
       scheduler.execute(timeStep, newTime);
     });
 
-    // Generate new processes if needed
     const timeSinceLastGeneration = newTime - this.state.lastProcessGeneration;
     const generationIntervalMs =
-      this.state.config.processGenerationInterval * 1000; // More reasonable generation interval
+      this.state.config.processGenerationInterval * 1000;
 
     console.log('🔍 Process Generation Check:', {
       newTime,
@@ -101,23 +95,18 @@ export class SimulationUseCase {
       timeSinceLastGeneration >= generationIntervalMs &&
       this.state.totalProcessesGenerated < this.state.config.maxProcesses
     ) {
-      // Generate processes in a more controlled manner
       const remainingProcesses =
         this.state.config.maxProcesses - this.state.totalProcessesGenerated;
       let numProcessesToGenerate;
 
-      // Generate 1-2 processes at a time to avoid overwhelming the system
       if (this.state.totalProcessesGenerated < 5) {
-        // Start with 2 processes
         numProcessesToGenerate = Math.min(2, remainingProcesses);
       } else if (this.state.totalProcessesGenerated < 15) {
-        // Generate 1-2 processes in the middle phase
         numProcessesToGenerate = Math.min(
-          Math.random() > 0.5 ? 2 : 1, 
+          Math.random() > 0.5 ? 2 : 1,
           remainingProcesses
         );
       } else {
-        // Generate 1 process at a time near the end
         numProcessesToGenerate = Math.min(1, remainingProcesses);
       }
 
@@ -126,14 +115,12 @@ export class SimulationUseCase {
       );
 
       for (let i = 0; i < numProcessesToGenerate; i++) {
-        // Generate a base process with proper ID management and spread arrival times
-        const arrivalTimeOffset = i * (200 + Math.random() * 300); // 200-500ms offset between processes
+        const arrivalTimeOffset = i * (200 + Math.random() * 300);
         const baseProcess = ProcessGenerator.generateRandomProcess(
           this.state.config,
           newTime + arrivalTimeOffset,
         );
 
-        // Create independent copies for each scheduler
         this.state.schedulers.forEach((scheduler) => {
           const processForScheduler = baseProcess.clone();
           scheduler.addProcess(processForScheduler);
@@ -148,7 +135,6 @@ export class SimulationUseCase {
       this.state.lastProcessGeneration = newTime;
     }
 
-    // Check if all processes are completed and stop simulation
     const allSchedulersHaveProcesses = Array.from(
       this.state.schedulers.values(),
     ).every((scheduler) => scheduler.getAllProcesses().length > 0);
@@ -162,7 +148,6 @@ export class SimulationUseCase {
         );
       });
 
-    // Only stop if we've reached max processes AND all are completed
     const maxProcessesReached =
       this.state.totalProcessesGenerated >= this.state.config.maxProcesses;
 
@@ -173,14 +158,11 @@ export class SimulationUseCase {
       this.state.isRunning = false;
     }
 
-    // Safety check: if simulation runs too long, stop it
     if (newTime > 300000) {
-      // 5 minutes max
       console.warn('Simulation timeout: Stopping after 5 minutes');
       this.state.isRunning = false;
     }
 
-    // Calculate metrics for all schedulers
     this.state.schedulers.forEach((scheduler) => {
       const metrics = scheduler.getMetrics(newTime);
       this.state.metrics.set(scheduler.getAlgorithmName(), metrics);

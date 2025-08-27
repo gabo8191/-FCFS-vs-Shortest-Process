@@ -20,27 +20,22 @@ export class SJFScheduler implements IProcessScheduler {
   }
 
   addProcess(process: Process): void {
-    // Set initial status based on arrival time
     if (process.arrivalTime <= this.currentTime) {
       process.setReady();
     } else {
       process.setWaiting();
     }
     this.readyQueue.push(process);
-    // Sort by arrival time for proper queue management
-    // We'll select the shortest job among available processes during execution
     this.readyQueue.sort((a, b) => a.arrivalTime - b.arrivalTime);
   }
 
   execute(timeStep: number, globalTime?: number): void {
-    // Use global time if provided, otherwise increment local time
     if (globalTime !== undefined) {
       this.currentTime = globalTime;
     } else {
       this.currentTime += timeStep;
     }
 
-    // Execute current running process
     if (this.runningProcess) {
       if (!this.runningProcess.isRunning()) {
         console.warn(
@@ -58,20 +53,16 @@ export class SJFScheduler implements IProcessScheduler {
       }
     }
 
-    // If no process is running, select the shortest job that has arrived
     if (!this.runningProcess) {
-      // Filter processes that have arrived and are ready
       const availableProcesses = this.readyQueue.filter(
         (p) => p.arrivalTime <= this.currentTime && p.isReady()
       );
 
       if (availableProcesses.length > 0) {
-        // Get the shortest job by burst time (SJF - non-preemptive)
         const shortestJob = availableProcesses.reduce((shortest, current) =>
           current.burstTime < shortest.burstTime ? current : shortest,
         );
 
-        // Remove from ready queue
         const index = this.readyQueue.indexOf(shortestJob);
         if (index > -1) {
           this.readyQueue.splice(index, 1);
@@ -82,7 +73,6 @@ export class SJFScheduler implements IProcessScheduler {
       }
     }
 
-    // Update process statuses for arrived processes
     this.readyQueue.forEach((process) => {
       if (process.arrivalTime <= this.currentTime && process.isWaiting()) {
         process.setReady();

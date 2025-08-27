@@ -80,7 +80,7 @@ export class Process {
       console.warn(
         `Attempting to start process ${this._data.name} in status ${this._data.status}`,
       );
-      return; // Silently return instead of throwing error
+      return;
     }
     this._data.status = ProcessStatus.RUNNING;
     if (this._data.startTime === undefined) {
@@ -93,7 +93,7 @@ export class Process {
       console.warn(
         `Attempting to execute process ${this._data.name} in status ${this._data.status}`,
       );
-      return; // Silently return instead of throwing error
+      return;
     }
     this._data.remainingTime = Math.max(0, this._data.remainingTime - timeStep);
   }
@@ -103,7 +103,7 @@ export class Process {
       console.warn(
         `Attempting to complete process ${this._data.name} in status ${this._data.status}`,
       );
-      return; // Silently return instead of throwing error
+      return;
     }
     this._data.status = ProcessStatus.COMPLETED;
     this._data.endTime = currentTime;
@@ -124,14 +124,10 @@ export class Process {
       this._data.startTime !== undefined &&
       this._data.endTime !== undefined
     ) {
-      // Turnaround time: tiempo total desde llegada hasta finalización
       this._data.turnaroundTime = this._data.endTime - this._data.arrivalTime;
 
-      // Waiting time: turnaround time - burst time
-      // Para algoritmos preemptivos, esto sigue siendo correcto
       this._data.waitingTime = this._data.turnaroundTime - this._data.burstTime;
 
-      // Asegurar que los tiempos nunca sean negativos
       this._data.waitingTime = Math.max(0, this._data.waitingTime);
       this._data.turnaroundTime = Math.max(0, this._data.turnaroundTime);
     }

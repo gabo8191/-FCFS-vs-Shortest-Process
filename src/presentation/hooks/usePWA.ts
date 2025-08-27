@@ -16,7 +16,6 @@ export const usePWA = (): PWAStatus => {
   );
 
   useEffect(() => {
-    // Detectar si la app está instalada
     const checkInstallation = () => {
       const isStandalone = window.matchMedia(
         '(display-mode: standalone)',
@@ -25,22 +24,17 @@ export const usePWA = (): PWAStatus => {
       setIsInstalled(isStandalone || isInApp);
     };
 
-    // Detectar cambios en la conectividad
     const handleOnline = () => setIsOffline(false);
     const handleOffline = () => setIsOffline(true);
 
-    // Verificar instalación inicial
     checkInstallation();
 
-    // Escuchar cambios en el modo de visualización
     const mediaQuery = window.matchMedia('(display-mode: standalone)');
     mediaQuery.addEventListener('change', checkInstallation);
 
-    // Escuchar cambios de conectividad
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Verificar actualizaciones de PWA
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.ready.then((registration) => {
         registration.addEventListener('updatefound', () => {

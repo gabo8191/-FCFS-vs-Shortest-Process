@@ -11,7 +11,6 @@ export const EquityAnalysis: React.FC<EquityAnalysisProps> = ({ config }) => {
     const ratio = config.maxBurstTime / config.minBurstTime;
     const rangeSpread = config.maxBurstTime - config.minBurstTime;
 
-    // Análisis de equidad basado en investigación de algoritmos de planificación
     let equityLevel: 'excellent' | 'good' | 'fair' | 'poor';
     let favorsAlgorithm: 'balanced' | 'fcfs' | 'sjf';
     let recommendation: string;
