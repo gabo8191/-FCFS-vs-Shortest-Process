@@ -93,14 +93,14 @@ export const SimulationView: React.FC = () => {
                 Procesos Generados
               </div>
             </div>
-            <div>
+            {/* <div>
               <div className='text-3xl font-light text-gray-900'>
                 {maxProcesses}
               </div>
               <div className='text-sm text-gray-500 font-medium mt-1'>
                 Máximo Procesos
               </div>
-            </div>
+            </div> */}
             <div>
               <div className='text-3xl font-light text-gray-900'>
                 {Math.round(currentTime / 1000)}s
